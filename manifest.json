@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "Καθαρή υδρόγειος χωρίς πλαίσιο θέσης, με μικρό πεδίο διαθέσιμων χρηστών χαμηλά δεξιά.",
+  "description": "LiveView με λογαριασμούς χρηστών, προφίλ και πραγματική διαθεσιμότητα.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d9",
+  "start_url": "./?source=pwa&version=d10",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

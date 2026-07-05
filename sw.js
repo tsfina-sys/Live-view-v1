@@ -1,10 +1,11 @@
-const CACHE = "liveview-d9-no-location-card-v1";
+const CACHE = "liveview-d10-accounts-v1";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./manifest.json",
+  "./supabase-config.js",
   "./icon-192.png",
   "./icon-512.png",
   "./icon-maskable-512.png",

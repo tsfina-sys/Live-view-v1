@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiveView" />
-  <meta name="description" content="LiveView — 3D σημεία ενδιαφέροντος, αναζήτηση και διαθέσιμοι χρήστες." />
-  <title>LiveView D9</title>
+  <meta name="description" content="LiveView — λογαριασμοί χρηστών, διαθεσιμότητα και ζωντανή εικόνα." />
+  <title>LiveView D10</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -44,6 +44,9 @@
       <div class="header-actions">
         <button id="installBtn" class="icon-text-btn" type="button" hidden>
           ⬇ <span>Εγκατάσταση</span>
+        </button>
+        <button id="accountBtn" class="account-btn" type="button" aria-label="Λογαριασμός">
+          <span id="accountInitial">?</span>
         </button>
         <button id="availabilityBtn" class="status-btn" type="button" aria-pressed="false">
           <span class="status-dot"></span>
@@ -166,9 +169,112 @@
     </div>
   </dialog>
 
+
+  <dialog id="authDialog" class="dialog auth-dialog">
+    <div class="dialog-heading">
+      <div>
+        <h2>Λογαριασμός LiveView</h2>
+        <p>Συνδέσου ή δημιούργησε νέο λογαριασμό.</p>
+      </div>
+      <button id="closeAuthBtn" class="dialog-close static-close" type="button" aria-label="Κλείσιμο">×</button>
+    </div>
+
+    <div id="supabaseMissingNotice" class="setup-notice" hidden>
+      <strong>Δεν έχει συνδεθεί ακόμη το Supabase.</strong>
+      <span>Συμπλήρωσε το αρχείο <code>supabase-config.js</code> σύμφωνα με το SETUP_SUPABASE.md.</span>
+    </div>
+
+    <div class="auth-tabs" role="tablist">
+      <button id="showLoginBtn" class="auth-tab active" type="button">Σύνδεση</button>
+      <button id="showRegisterBtn" class="auth-tab" type="button">Εγγραφή</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <label class="field">
+        <span>Email</span>
+        <input id="loginEmail" type="email" autocomplete="email" required />
+      </label>
+      <label class="field">
+        <span>Κωδικός</span>
+        <input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required />
+      </label>
+      <button class="primary-btn full-btn" type="submit">Σύνδεση</button>
+      <button id="forgotPasswordBtn" class="link-btn" type="button">Ξέχασα τον κωδικό</button>
+    </form>
+
+    <form id="registerForm" class="auth-form" hidden>
+      <label class="field">
+        <span>Όνομα ή ψευδώνυμο</span>
+        <input id="registerNickname" type="text" autocomplete="nickname" minlength="2" maxlength="40" required />
+      </label>
+      <label class="field">
+        <span>Email</span>
+        <input id="registerEmail" type="email" autocomplete="email" required />
+      </label>
+      <label class="field">
+        <span>Κωδικός</span>
+        <input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required />
+      </label>
+      <label class="field">
+        <span>Επανάληψη κωδικού</span>
+        <input id="registerPasswordAgain" type="password" autocomplete="new-password" minlength="8" required />
+      </label>
+      <label class="terms-check">
+        <input id="acceptTerms" type="checkbox" required />
+        <span>Συμφωνώ ότι η κάμερα και η δημόσια θέση ενεργοποιούνται μόνο με δική μου επιλογή.</span>
+      </label>
+      <button class="primary-btn full-btn" type="submit">Δημιουργία λογαριασμού</button>
+    </form>
+
+    <div id="authMessage" class="auth-message" aria-live="polite"></div>
+  </dialog>
+
+  <dialog id="accountDialog" class="dialog account-dialog">
+    <div class="dialog-heading">
+      <div>
+        <h2>Το προφίλ μου</h2>
+        <p id="accountEmail">—</p>
+      </div>
+      <button id="closeAccountBtn" class="dialog-close static-close" type="button" aria-label="Κλείσιμο">×</button>
+    </div>
+
+    <div class="account-summary">
+      <div id="accountInitialLarge" class="account-avatar">?</div>
+      <div>
+        <strong id="accountNickname">Χρήστης</strong>
+        <small id="accountState">Συνδεδεμένος</small>
+      </div>
+    </div>
+
+    <form id="profileForm" class="auth-form">
+      <label class="field">
+        <span>Όνομα ή ψευδώνυμο</span>
+        <input id="profileNicknameInput" type="text" minlength="2" maxlength="40" required />
+      </label>
+      <button class="secondary-btn full-btn" type="submit">Αποθήκευση ονόματος</button>
+    </form>
+
+    <div class="availability-card">
+      <div>
+        <strong>Δημόσια διαθεσιμότητα</strong>
+        <small id="accountAvailabilityText">Μη διαθέσιμος</small>
+      </div>
+      <button id="accountAvailabilityBtn" class="availability-action" type="button">Ενεργοποίηση</button>
+    </div>
+
+    <p class="privacy-copy">
+      Όταν ενεργοποιείται η διαθεσιμότητα, αποθηκεύεται μόνο σκόπιμα μετατοπισμένη
+      θέση. Η ακριβής θέση GPS παραμένει στη συσκευή.
+    </p>
+
+    <button id="logoutBtn" class="danger-btn full-btn" type="button">Αποσύνδεση</button>
+  </dialog>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-config.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

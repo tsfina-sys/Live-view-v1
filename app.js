@@ -1,4 +1,4 @@
-const demoUsers = [
+const fallbackDemoUsers = [
   { id: 1, name: "Άννα", area: "Σύνταγμα, Αθήνα", country: "Ελλάδα", lat: 37.9754, lng: 23.7348, status: "available" },
   { id: 2, name: "Μάριος", area: "Μοναστηράκι, Αθήνα", country: "Ελλάδα", lat: 37.9769, lng: 23.7258, status: "available" },
   { id: 3, name: "Ελένη", area: "Θεσσαλονίκη", country: "Ελλάδα", lat: 40.6401, lng: 22.9444, status: "available" },
@@ -19,6 +19,8 @@ const demoUsers = [
   { id: 18, name: "Daniel", area: "Berlin", country: "Germany", lat: 52.5200, lng: 13.4050, status: "available" }
 ];
 
+let appUsers = [...fallbackDemoUsers];
+
 
 let selectedUser = null;
 let currentStream = null;
@@ -37,6 +39,12 @@ let activeMode = "global";
 let nearbyRadiusKm = 25;
 let visibleUsers = [];
 let mapReady = false;
+let supabaseClient = null;
+let currentUser = null;
+let currentProfile = null;
+let profilesChannel = null;
+let supabaseConfigured = false;
+let myCountryName = null;
 
 const userMarkerEntries = new Map();
 
@@ -60,6 +68,8 @@ map.addControl(
 
 const startScreen = document.getElementById("startScreen");
 const enterAppBtn = document.getElementById("enterAppBtn");
+const accountBtn = document.getElementById("accountBtn");
+const accountInitial = document.getElementById("accountInitial");
 const availabilityBtn = document.getElementById("availabilityBtn");
 const statusLabel = availabilityBtn.querySelector(".status-label");
 const installBtn = document.getElementById("installBtn");
@@ -96,6 +106,34 @@ const cameraError = document.getElementById("cameraError");
 const closeCameraBtn = document.getElementById("closeCameraBtn");
 const stopCameraBtn = document.getElementById("stopCameraBtn");
 const switchCameraBtn = document.getElementById("switchCameraBtn");
+const authDialog = document.getElementById("authDialog");
+const closeAuthBtn = document.getElementById("closeAuthBtn");
+const supabaseMissingNotice = document.getElementById("supabaseMissingNotice");
+const showLoginBtn = document.getElementById("showLoginBtn");
+const showRegisterBtn = document.getElementById("showRegisterBtn");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+const registerNickname = document.getElementById("registerNickname");
+const registerEmail = document.getElementById("registerEmail");
+const registerPassword = document.getElementById("registerPassword");
+const registerPasswordAgain = document.getElementById("registerPasswordAgain");
+const acceptTerms = document.getElementById("acceptTerms");
+const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+const authMessage = document.getElementById("authMessage");
+
+const accountDialog = document.getElementById("accountDialog");
+const closeAccountBtn = document.getElementById("closeAccountBtn");
+const accountEmail = document.getElementById("accountEmail");
+const accountInitialLarge = document.getElementById("accountInitialLarge");
+const accountNickname = document.getElementById("accountNickname");
+const accountState = document.getElementById("accountState");
+const profileForm = document.getElementById("profileForm");
+const profileNicknameInput = document.getElementById("profileNicknameInput");
+const accountAvailabilityText = document.getElementById("accountAvailabilityText");
+const accountAvailabilityBtn = document.getElementById("accountAvailabilityBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const toast = document.getElementById("toast");
 
 function showToast(message) {
@@ -104,6 +142,361 @@ function showToast(message) {
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 3200);
 }
+
+
+function setAuthMessage(message = "", type = "") {
+  authMessage.textContent = message;
+  authMessage.classList.toggle("error", type === "error");
+  authMessage.classList.toggle("success", type === "success");
+}
+
+function getSupabaseConfig() {
+  const config = window.LIVEVIEW_SUPABASE || {};
+  return {
+    url: String(config.url || "").trim(),
+    key: String(config.publishableKey || config.anonKey || "").trim()
+  };
+}
+
+function initializeSupabaseClient() {
+  const config = getSupabaseConfig();
+  const placeholder =
+    !config.url ||
+    !config.key ||
+    config.url.includes("PASTE_") ||
+    config.key.includes("PASTE_");
+
+  supabaseConfigured =
+    !placeholder &&
+    Boolean(window.supabase?.createClient);
+
+  supabaseMissingNotice.hidden = supabaseConfigured;
+
+  if (!supabaseConfigured) {
+    setAppUsers(fallbackDemoUsers);
+    updateAccountUi();
+    return false;
+  }
+
+  supabaseClient = window.supabase.createClient(config.url, config.key, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  });
+
+  return true;
+}
+
+function openAuthDialog(mode = "login") {
+  switchAuthMode(mode);
+  setAuthMessage("");
+  supabaseMissingNotice.hidden = supabaseConfigured;
+  authDialog.showModal();
+}
+
+function switchAuthMode(mode) {
+  const login = mode === "login";
+  loginForm.hidden = !login;
+  registerForm.hidden = login;
+  showLoginBtn.classList.toggle("active", login);
+  showRegisterBtn.classList.toggle("active", !login);
+}
+
+function updateAvailabilityUi() {
+  availabilityBtn.classList.toggle("active", isAvailable);
+  availabilityBtn.setAttribute("aria-pressed", String(isAvailable));
+  statusLabel.textContent = isAvailable ? "Διαθέσιμος" : "Μη διαθέσιμος";
+  accountAvailabilityText.textContent = isAvailable ? "Διαθέσιμος" : "Μη διαθέσιμος";
+  accountAvailabilityBtn.textContent = isAvailable ? "Απενεργοποίηση" : "Ενεργοποίηση";
+  accountAvailabilityBtn.classList.toggle("active", isAvailable);
+}
+
+function updateAccountUi() {
+  const nickname =
+    currentProfile?.nickname ||
+    currentUser?.user_metadata?.nickname ||
+    currentUser?.email?.split("@")[0] ||
+    "Χρήστης";
+
+  const initial = currentUser ? nickname.charAt(0).toUpperCase() : "?";
+
+  accountInitial.textContent = initial;
+  accountInitialLarge.textContent = initial;
+  accountBtn.classList.toggle("signed-in", Boolean(currentUser));
+  accountBtn.title = currentUser ? `Προφίλ: ${nickname}` : "Σύνδεση / Εγγραφή";
+
+  accountNickname.textContent = nickname;
+  accountEmail.textContent = currentUser?.email || "Δεν έχει γίνει σύνδεση";
+  profileNicknameInput.value = currentUser ? nickname : "";
+  accountState.textContent = currentUser ? "Συνδεδεμένος" : "Επισκέπτης";
+
+  updateAvailabilityUi();
+}
+
+async function ensureProfile() {
+  if (!supabaseClient || !currentUser) return null;
+
+  const nickname =
+    currentUser.user_metadata?.nickname ||
+    currentUser.email?.split("@")[0] ||
+    "Χρήστης";
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .upsert(
+      {
+        id: currentUser.id,
+        nickname
+      },
+      { onConflict: "id" }
+    )
+    .select()
+    .single();
+
+  if (error) {
+    console.warn("Profile upsert failed:", error);
+    return null;
+  }
+
+  return data;
+}
+
+async function loadMyProfile() {
+  if (!supabaseClient || !currentUser) return null;
+
+  let { data, error } = await supabaseClient
+    .from("profiles")
+    .select("id,nickname,is_available,public_lat,public_lng,area_name,country_name,last_seen")
+    .eq("id", currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("Profile load failed:", error);
+  }
+
+  if (!data) {
+    data = await ensureProfile();
+  }
+
+  currentProfile = data || null;
+  isAvailable = Boolean(currentProfile?.is_available);
+
+  if (myPublicMarker) {
+    myPublicMarker.remove();
+    myPublicMarker = null;
+  }
+
+  if (
+    isAvailable &&
+    Number.isFinite(Number(currentProfile?.public_lat)) &&
+    Number.isFinite(Number(currentProfile?.public_lng))
+  ) {
+    createOwnPublicMarker(
+      Number(currentProfile.public_lng),
+      Number(currentProfile.public_lat)
+    );
+  }
+
+  updateAccountUi();
+  return currentProfile;
+}
+
+function createOwnPublicMarker(longitude, latitude) {
+  if (myPublicMarker) myPublicMarker.remove();
+
+  const el = document.createElement("div");
+  el.className = "user-marker public-me";
+  el.textContent = accountInitial.textContent || "Ε";
+  el.title = "Η προσεγγιστική δημόσια θέση σου";
+
+  myPublicMarker = new maplibregl.Marker({ element: el })
+    .setLngLat([longitude, latitude])
+    .addTo(map);
+}
+
+async function loadRealUsers() {
+  if (!supabaseClient || !currentUser) {
+    setAppUsers(supabaseConfigured ? [] : fallbackDemoUsers);
+    return;
+  }
+
+  let query = supabaseClient
+    .from("profiles")
+    .select("id,nickname,public_lat,public_lng,area_name,country_name,is_available,last_seen")
+    .eq("is_available", true)
+    .not("public_lat", "is", null)
+    .not("public_lng", "is", null);
+
+  query = query.neq("id", currentUser.id);
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.warn("Available users load failed:", error);
+    showToast("Δεν φορτώθηκαν οι διαθέσιμοι χρήστες.");
+    return;
+  }
+
+  const users = (data || []).map(profile => ({
+    id: profile.id,
+    name: profile.nickname || "Χρήστης",
+    area: profile.area_name || "Άγνωστη περιοχή",
+    country: profile.country_name || "",
+    lat: Number(profile.public_lat),
+    lng: Number(profile.public_lng),
+    status: "available",
+    real: true
+  })).filter(user => Number.isFinite(user.lat) && Number.isFinite(user.lng));
+
+  setAppUsers(users);
+}
+
+function unsubscribeProfiles() {
+  if (supabaseClient && profilesChannel) {
+    supabaseClient.removeChannel(profilesChannel);
+  }
+  profilesChannel = null;
+}
+
+function subscribeProfiles() {
+  if (!supabaseClient || !currentUser) return;
+
+  unsubscribeProfiles();
+
+  profilesChannel = supabaseClient
+    .channel("liveview-profiles")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "profiles" },
+      () => loadRealUsers()
+    )
+    .subscribe();
+}
+
+async function applySession(session) {
+  currentUser = session?.user || null;
+
+  if (!currentUser) {
+    currentProfile = null;
+    isAvailable = false;
+    unsubscribeProfiles();
+
+    if (myPublicMarker) {
+      myPublicMarker.remove();
+      myPublicMarker = null;
+    }
+
+    setAppUsers(supabaseConfigured ? [] : fallbackDemoUsers);
+    updateAccountUi();
+    return;
+  }
+
+  await loadMyProfile();
+  await loadRealUsers();
+  subscribeProfiles();
+}
+
+async function initializeAuth() {
+  if (!initializeSupabaseClient()) return;
+
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) console.warn("Session load failed:", error);
+
+  await applySession(data?.session || null);
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    window.setTimeout(() => applySession(session), 0);
+  });
+}
+
+async function toggleAvailability() {
+  if (!supabaseConfigured) {
+    openAuthDialog("login");
+    setAuthMessage(
+      "Πρέπει πρώτα να συνδεθεί το Supabase μέσω του αρχείου supabase-config.js.",
+      "error"
+    );
+    return;
+  }
+
+  if (!currentUser) {
+    openAuthDialog("login");
+    setAuthMessage("Συνδέσου για να εμφανιστείς ως διαθέσιμος.");
+    return;
+  }
+
+  if (!isAvailable) {
+    const located =
+      Boolean(myCoordinates) ||
+      await requestMyLocation({ keepGlobeView: false });
+
+    if (!located || !myCoordinates) return;
+
+    const publicLongitude = privacyOffset(myCoordinates.longitude);
+    const publicLatitude = privacyOffset(myCoordinates.latitude);
+
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .update({
+        is_available: true,
+        public_lat: publicLatitude,
+        public_lng: publicLongitude,
+        area_name: myAreaName || "Η περιοχή μου",
+        country_name: myCountryName || "",
+        last_seen: new Date().toISOString()
+      })
+      .eq("id", currentUser.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      showToast("Δεν ενεργοποιήθηκε η διαθεσιμότητα.");
+      return;
+    }
+
+    currentProfile = data;
+    isAvailable = true;
+    createOwnPublicMarker(publicLongitude, publicLatitude);
+    updateAccountUi();
+    await loadRealUsers();
+    showToast("Εμφανίζεσαι με προσεγγιστική θέση.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .update({
+      is_available: false,
+      public_lat: null,
+      public_lng: null,
+      last_seen: new Date().toISOString()
+    })
+    .eq("id", currentUser.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    showToast("Δεν απενεργοποιήθηκε η διαθεσιμότητα.");
+    return;
+  }
+
+  currentProfile = data;
+  isAvailable = false;
+
+  if (myPublicMarker) {
+    myPublicMarker.remove();
+    myPublicMarker = null;
+  }
+
+  updateAccountUi();
+  await loadRealUsers();
+  showToast("Δεν εμφανίζεσαι πλέον ως διαθέσιμος.");
+}
+
 
 function isRunningAsInstalledApp() {
   return window.matchMedia("(display-mode: standalone)").matches ||
@@ -167,7 +560,7 @@ map.on("style.load", () => {
 
 map.on("load", () => {
   mapReady = true;
-  createUserMarkers();
+  rebuildUserMarkers();
   activateMode("global", { moveMap: false });
 });
 
@@ -230,13 +623,18 @@ enterAppBtn.addEventListener("click", async () => {
   await requestMyLocation({ keepGlobeView: true, silentFailure: false });
 });
 
+function clearUserMarkers() {
+  userMarkerEntries.forEach(({ marker }) => marker.remove());
+  userMarkerEntries.clear();
+}
+
 function createUserMarkers() {
-  demoUsers.forEach(user => {
+  appUsers.forEach(user => {
     const el = document.createElement("button");
     el.className = "user-marker";
     el.type = "button";
-    el.textContent = user.name.charAt(0);
-    el.title = `${user.name} — ${user.area}`;
+    el.textContent = user.name.charAt(0).toUpperCase();
+    el.title = `${user.name} — ${user.area || "Άγνωστη περιοχή"}`;
     el.addEventListener("click", () => openRequest(user));
 
     const marker = new maplibregl.Marker({ element: el })
@@ -245,6 +643,18 @@ function createUserMarkers() {
 
     userMarkerEntries.set(user.id, { user, marker, element: el });
   });
+}
+
+function rebuildUserMarkers() {
+  if (!mapReady) return;
+  clearUserMarkers();
+  createUserMarkers();
+  refreshUsers();
+}
+
+function setAppUsers(users) {
+  appUsers = Array.isArray(users) ? users : [];
+  rebuildUserMarkers();
 }
 
 function openRequest(user) {
@@ -289,17 +699,19 @@ async function reverseGeocode(latitude, longitude) {
     const result = await response.json();
     const address = result.address || {};
 
-    return (
-      address.city ||
-      address.town ||
-      address.village ||
-      address.municipality ||
-      address.county ||
-      address.state ||
-      "Η θέση μου"
-    );
+    return {
+      area:
+        address.city ||
+        address.town ||
+        address.village ||
+        address.municipality ||
+        address.county ||
+        address.state ||
+        "Η θέση μου",
+      country: address.country || ""
+    };
   } catch (error) {
-    return "Η θέση μου";
+    return { area: "Η θέση μου", country: "" };
   }
 }
 
@@ -329,7 +741,9 @@ function requestMyLocation({ keepGlobeView = true, silentFailure = false } = {})
         myCoordinates = { latitude, longitude, accuracy };
         createExactLocationMarker(longitude, latitude);
 
-        myAreaName = await reverseGeocode(latitude, longitude);
+        const placeDetails = await reverseGeocode(latitude, longitude);
+        myAreaName = placeDetails.area;
+        myCountryName = placeDetails.country;
 
         updateLocationCard({
           title: myAreaName,
@@ -389,42 +803,7 @@ function privacyOffset(value) {
   return value + (Math.random() - 0.5) * 0.009;
 }
 
-availabilityBtn.addEventListener("click", async () => {
-  if (!isAvailable) {
-    const located = myCoordinates || await requestMyLocation({ keepGlobeView: false });
-    if (!located && !myCoordinates) return;
-
-    const publicLongitude = privacyOffset(myCoordinates.longitude);
-    const publicLatitude = privacyOffset(myCoordinates.latitude);
-    const el = document.createElement("div");
-    el.className = "user-marker public-me";
-    el.textContent = "Ε";
-    el.title = "Η προσεγγιστική δημόσια θέση σου";
-
-    if (myPublicMarker) myPublicMarker.remove();
-    myPublicMarker = new maplibregl.Marker({ element: el })
-      .setLngLat([publicLongitude, publicLatitude])
-      .addTo(map);
-
-    isAvailable = true;
-    availabilityBtn.classList.add("active");
-    availabilityBtn.setAttribute("aria-pressed", "true");
-    statusLabel.textContent = "Διαθέσιμος";
-    showToast("Εμφανίζεσαι με προσεγγιστική θέση.");
-    return;
-  }
-
-  isAvailable = false;
-  availabilityBtn.classList.remove("active");
-  availabilityBtn.setAttribute("aria-pressed", "false");
-  statusLabel.textContent = "Μη διαθέσιμος";
-
-  if (myPublicMarker) {
-    myPublicMarker.remove();
-    myPublicMarker = null;
-  }
-  showToast("Δεν εμφανίζεσαι πλέον ως διαθέσιμος.");
-});
+availabilityBtn.addEventListener("click", toggleAvailability);
 
 function haversineKm(lat1, lng1, lat2, lng2) {
   const toRadians = value => value * Math.PI / 180;
@@ -455,7 +834,7 @@ function isInsideBounds(user, bounds) {
 }
 
 function getUsersForCurrentMode() {
-  const available = demoUsers.filter(user => user.status === "available");
+  const available = appUsers.filter(user => user.status === "available");
 
   if (activeMode === "global") return available;
 
@@ -513,7 +892,7 @@ function renderUsersList() {
   list.innerHTML = "";
 
   if (visibleUsers.length === 0) {
-    list.innerHTML = `<div class="user-list-empty">Δεν υπάρχουν δοκιμαστικοί διαθέσιμοι χρήστες σε αυτή την επιλογή.</div>`;
+    list.innerHTML = `<div class="user-list-empty">Δεν υπάρχουν διαθέσιμοι χρήστες σε αυτή την επιλογή.</div>`;
     return;
   }
 
@@ -818,8 +1197,15 @@ sendRequestBtn.addEventListener("click", event => {
   event.preventDefault();
   if (!selectedUser) return;
 
+  if (supabaseConfigured && !currentUser) {
+    requestDialog.close();
+    openAuthDialog("login");
+    setAuthMessage("Συνδέσου για να στείλεις αίτημα.");
+    return;
+  }
+
   requestDialog.close();
-  showToast(`Το δοκιμαστικό αίτημα προς ${selectedUser.name} στάλθηκε για ${requestDuration.value} λεπτά.`);
+  showToast(`Το αίτημα προς ${selectedUser.name} θα ενεργοποιηθεί στο επόμενο βήμα.`);
   selectedUser = null;
 });
 
@@ -883,6 +1269,192 @@ cameraDialog.addEventListener("cancel", event => {
 });
 
 window.addEventListener("beforeunload", () => stopCamera(false));
+
+
+accountBtn.addEventListener("click", () => {
+  if (currentUser) {
+    updateAccountUi();
+    accountDialog.showModal();
+  } else {
+    openAuthDialog("login");
+  }
+});
+
+closeAuthBtn.addEventListener("click", () => authDialog.close());
+closeAccountBtn.addEventListener("click", () => accountDialog.close());
+
+showLoginBtn.addEventListener("click", () => {
+  switchAuthMode("login");
+  setAuthMessage("");
+});
+
+showRegisterBtn.addEventListener("click", () => {
+  switchAuthMode("register");
+  setAuthMessage("");
+});
+
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!supabaseClient) {
+    setAuthMessage("Δεν έχει ρυθμιστεί το Supabase.", "error");
+    return;
+  }
+
+  setAuthMessage("Γίνεται σύνδεση…");
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: loginEmail.value.trim(),
+    password: loginPassword.value
+  });
+
+  if (error) {
+    setAuthMessage(error.message || "Αποτυχία σύνδεσης.", "error");
+    return;
+  }
+
+  setAuthMessage("Η σύνδεση ολοκληρώθηκε.", "success");
+  loginForm.reset();
+  window.setTimeout(() => {
+    if (authDialog.open) authDialog.close();
+  }, 450);
+});
+
+registerForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!supabaseClient) {
+    setAuthMessage("Δεν έχει ρυθμιστεί το Supabase.", "error");
+    return;
+  }
+
+  const nickname = registerNickname.value.trim();
+  const email = registerEmail.value.trim();
+  const password = registerPassword.value;
+  const passwordAgain = registerPasswordAgain.value;
+
+  if (password !== passwordAgain) {
+    setAuthMessage("Οι δύο κωδικοί δεν είναι ίδιοι.", "error");
+    return;
+  }
+
+  if (!acceptTerms.checked) {
+    setAuthMessage("Χρειάζεται αποδοχή της δήλωσης ιδιωτικότητας.", "error");
+    return;
+  }
+
+  setAuthMessage("Δημιουργείται ο λογαριασμός…");
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { nickname },
+      emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+    }
+  });
+
+  if (error) {
+    setAuthMessage(error.message || "Αποτυχία εγγραφής.", "error");
+    return;
+  }
+
+  registerForm.reset();
+
+  if (data?.session) {
+    setAuthMessage("Ο λογαριασμός δημιουργήθηκε.", "success");
+    window.setTimeout(() => {
+      if (authDialog.open) authDialog.close();
+    }, 500);
+  } else {
+    setAuthMessage(
+      "Ο λογαριασμός δημιουργήθηκε. Έλεγξε το email σου για επιβεβαίωση.",
+      "success"
+    );
+  }
+});
+
+forgotPasswordBtn.addEventListener("click", async () => {
+  if (!supabaseClient) {
+    setAuthMessage("Δεν έχει ρυθμιστεί το Supabase.", "error");
+    return;
+  }
+
+  const email = loginEmail.value.trim();
+  if (!email) {
+    setAuthMessage("Γράψε πρώτα το email σου.", "error");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}${window.location.pathname}`
+  });
+
+  if (error) {
+    setAuthMessage(error.message || "Δεν στάλθηκε email επαναφοράς.", "error");
+    return;
+  }
+
+  setAuthMessage("Στάλθηκε email επαναφοράς κωδικού.", "success");
+});
+
+profileForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!supabaseClient || !currentUser) return;
+
+  const nickname = profileNicknameInput.value.trim();
+  if (nickname.length < 2) {
+    showToast("Το όνομα πρέπει να έχει τουλάχιστον 2 χαρακτήρες.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .update({ nickname })
+    .eq("id", currentUser.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    showToast("Δεν αποθηκεύτηκε το όνομα.");
+    return;
+  }
+
+  currentProfile = data;
+  updateAccountUi();
+  await loadRealUsers();
+  showToast("Το όνομα αποθηκεύτηκε.");
+});
+
+accountAvailabilityBtn.addEventListener("click", toggleAvailability);
+
+logoutBtn.addEventListener("click", async () => {
+  if (!supabaseClient) return;
+
+  if (isAvailable) {
+    const { error: availabilityError } = await supabaseClient
+      .from("profiles")
+      .update({
+        is_available: false,
+        public_lat: null,
+        public_lng: null,
+        last_seen: new Date().toISOString()
+      })
+      .eq("id", currentUser.id);
+
+    if (availabilityError) {
+      console.warn("Availability cleanup failed:", availabilityError);
+    }
+  }
+
+  await supabaseClient.auth.signOut();
+  if (accountDialog.open) accountDialog.close();
+  showToast("Έγινε αποσύνδεση.");
+});
+
+initializeAuth();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
