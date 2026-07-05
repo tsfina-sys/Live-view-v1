@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "LiveView με λογαριασμούς χρηστών, προφίλ και πραγματική διαθεσιμότητα.",
+  "description": "LiveView με σύνδεση ή εγγραφή από την αρχική οθόνη και χωρίς ερωτηματικό λογαριασμού στον χάρτη.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d10",
+  "start_url": "./?source=pwa&version=d11",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

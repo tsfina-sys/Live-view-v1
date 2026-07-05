@@ -1,4 +1,4 @@
-const CACHE = "liveview-d10-accounts-v1";
+const CACHE = "liveview-d11-login-from-start-v1";
 const APP_SHELL = [
   "./",
   "./index.html",

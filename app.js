@@ -45,6 +45,8 @@ let currentProfile = null;
 let profilesChannel = null;
 let supabaseConfigured = false;
 let myCountryName = null;
+let appEntered = false;
+let pendingEntryAfterAuth = false;
 
 const userMarkerEntries = new Map();
 
@@ -67,9 +69,11 @@ map.addControl(
 );
 
 const startScreen = document.getElementById("startScreen");
+const startIntro = document.getElementById("startIntro");
+const startAuthPanel = document.getElementById("startAuthPanel");
 const enterAppBtn = document.getElementById("enterAppBtn");
-const accountBtn = document.getElementById("accountBtn");
-const accountInitial = document.getElementById("accountInitial");
+const backAuthBtn = document.getElementById("backAuthBtn");
+const profileMenuBtn = document.getElementById("profileMenuBtn");
 const availabilityBtn = document.getElementById("availabilityBtn");
 const statusLabel = availabilityBtn.querySelector(".status-label");
 const installBtn = document.getElementById("installBtn");
@@ -106,8 +110,6 @@ const cameraError = document.getElementById("cameraError");
 const closeCameraBtn = document.getElementById("closeCameraBtn");
 const stopCameraBtn = document.getElementById("stopCameraBtn");
 const switchCameraBtn = document.getElementById("switchCameraBtn");
-const authDialog = document.getElementById("authDialog");
-const closeAuthBtn = document.getElementById("closeAuthBtn");
 const supabaseMissingNotice = document.getElementById("supabaseMissingNotice");
 const showLoginBtn = document.getElementById("showLoginBtn");
 const showRegisterBtn = document.getElementById("showRegisterBtn");
@@ -193,7 +195,56 @@ function openAuthDialog(mode = "login") {
   switchAuthMode(mode);
   setAuthMessage("");
   supabaseMissingNotice.hidden = supabaseConfigured;
-  authDialog.showModal();
+  startIntro.hidden = true;
+  startAuthPanel.hidden = false;
+
+  window.setTimeout(() => {
+    const firstField = mode === "login" ? loginEmail : registerNickname;
+    firstField?.focus();
+  }, 100);
+}
+
+function closeAuthPanel() {
+  pendingEntryAfterAuth = false;
+  startAuthPanel.hidden = true;
+  startIntro.hidden = false;
+  enterAppBtn.disabled = false;
+  setAuthMessage("");
+}
+
+function updateStartEntryButton() {
+  enterAppBtn.textContent = currentUser ? "Είσοδος" : "Σύνδεση / Εγγραφή";
+}
+
+async function enterMainApp() {
+  if (appEntered) return;
+
+  appEntered = true;
+  pendingEntryAfterAuth = false;
+  startAuthPanel.hidden = true;
+  startIntro.hidden = false;
+  startScreen.classList.add("leaving");
+
+  window.setTimeout(() => {
+    startScreen.hidden = true;
+  }, 500);
+
+  await requestMyLocation({ keepGlobeView: true, silentFailure: false });
+}
+
+function showStartScreen() {
+  appEntered = false;
+  pendingEntryAfterAuth = false;
+  startScreen.hidden = false;
+  startAuthPanel.hidden = true;
+  startIntro.hidden = false;
+  enterAppBtn.disabled = false;
+
+  requestAnimationFrame(() => {
+    startScreen.classList.remove("leaving");
+  });
+
+  updateStartEntryButton();
 }
 
 function switchAuthMode(mode) {
@@ -222,16 +273,14 @@ function updateAccountUi() {
 
   const initial = currentUser ? nickname.charAt(0).toUpperCase() : "?";
 
-  accountInitial.textContent = initial;
   accountInitialLarge.textContent = initial;
-  accountBtn.classList.toggle("signed-in", Boolean(currentUser));
-  accountBtn.title = currentUser ? `Προφίλ: ${nickname}` : "Σύνδεση / Εγγραφή";
-
   accountNickname.textContent = nickname;
   accountEmail.textContent = currentUser?.email || "Δεν έχει γίνει σύνδεση";
   profileNicknameInput.value = currentUser ? nickname : "";
   accountState.textContent = currentUser ? "Συνδεδεμένος" : "Επισκέπτης";
+  profileMenuBtn.title = currentUser ? `Προφίλ: ${nickname}` : "Λογαριασμός";
 
+  updateStartEntryButton();
   updateAvailabilityUi();
 }
 
@@ -308,7 +357,11 @@ function createOwnPublicMarker(longitude, latitude) {
 
   const el = document.createElement("div");
   el.className = "user-marker public-me";
-  el.textContent = accountInitial.textContent || "Ε";
+  const publicNickname =
+    currentProfile?.nickname ||
+    currentUser?.user_metadata?.nickname ||
+    "Ε";
+  el.textContent = publicNickname.charAt(0).toUpperCase();
   el.title = "Η προσεγγιστική δημόσια θέση σου";
 
   myPublicMarker = new maplibregl.Marker({ element: el })
@@ -390,12 +443,20 @@ async function applySession(session) {
 
     setAppUsers(supabaseConfigured ? [] : fallbackDemoUsers);
     updateAccountUi();
+
+    if (appEntered) {
+      showStartScreen();
+    }
     return;
   }
 
   await loadMyProfile();
   await loadRealUsers();
   subscribeProfiles();
+
+  if (pendingEntryAfterAuth && !appEntered) {
+    await enterMainApp();
+  }
 }
 
 async function initializeAuth() {
@@ -614,13 +675,16 @@ function addOptional3DBuildings() {
 
 enterAppBtn.addEventListener("click", async () => {
   enterAppBtn.disabled = true;
-  startScreen.classList.add("leaving");
 
-  window.setTimeout(() => {
-    startScreen.hidden = true;
-  }, 500);
+  if (currentUser) {
+    await enterMainApp();
+    enterAppBtn.disabled = false;
+    return;
+  }
 
-  await requestMyLocation({ keepGlobeView: true, silentFailure: false });
+  pendingEntryAfterAuth = true;
+  openAuthDialog("login");
+  enterAppBtn.disabled = false;
 });
 
 function clearUserMarkers() {
@@ -1199,6 +1263,8 @@ sendRequestBtn.addEventListener("click", event => {
 
   if (supabaseConfigured && !currentUser) {
     requestDialog.close();
+    showStartScreen();
+    pendingEntryAfterAuth = true;
     openAuthDialog("login");
     setAuthMessage("Συνδέσου για να στείλεις αίτημα.");
     return;
@@ -1271,16 +1337,22 @@ cameraDialog.addEventListener("cancel", event => {
 window.addEventListener("beforeunload", () => stopCamera(false));
 
 
-accountBtn.addEventListener("click", () => {
+profileMenuBtn.addEventListener("click", () => {
   if (currentUser) {
     updateAccountUi();
-    accountDialog.showModal();
+    if (typeof accountDialog.showModal === "function") {
+      accountDialog.showModal();
+    } else {
+      accountDialog.setAttribute("open", "");
+    }
   } else {
+    showStartScreen();
+    pendingEntryAfterAuth = true;
     openAuthDialog("login");
   }
 });
 
-closeAuthBtn.addEventListener("click", () => authDialog.close());
+backAuthBtn.addEventListener("click", closeAuthPanel);
 closeAccountBtn.addEventListener("click", () => accountDialog.close());
 
 showLoginBtn.addEventListener("click", () => {
@@ -1303,7 +1375,7 @@ loginForm.addEventListener("submit", async event => {
 
   setAuthMessage("Γίνεται σύνδεση…");
 
-  const { error } = await supabaseClient.auth.signInWithPassword({
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: loginEmail.value.trim(),
     password: loginPassword.value
   });
@@ -1315,9 +1387,11 @@ loginForm.addEventListener("submit", async event => {
 
   setAuthMessage("Η σύνδεση ολοκληρώθηκε.", "success");
   loginForm.reset();
-  window.setTimeout(() => {
-    if (authDialog.open) authDialog.close();
-  }, 450);
+
+  if (data?.session) {
+    await applySession(data.session);
+    await enterMainApp();
+  }
 });
 
 registerForm.addEventListener("submit", async event => {
@@ -1363,9 +1437,8 @@ registerForm.addEventListener("submit", async event => {
 
   if (data?.session) {
     setAuthMessage("Ο λογαριασμός δημιουργήθηκε.", "success");
-    window.setTimeout(() => {
-      if (authDialog.open) authDialog.close();
-    }, 500);
+    await applySession(data.session);
+    await enterMainApp();
   } else {
     setAuthMessage(
       "Ο λογαριασμός δημιουργήθηκε. Έλεγξε το email σου για επιβεβαίωση.",
@@ -1451,9 +1524,11 @@ logoutBtn.addEventListener("click", async () => {
 
   await supabaseClient.auth.signOut();
   if (accountDialog.open) accountDialog.close();
+  showStartScreen();
   showToast("Έγινε αποσύνδεση.");
 });
 
+updateStartEntryButton();
 initializeAuth();
 
 if ("serviceWorker" in navigator) {
