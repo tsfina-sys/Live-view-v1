@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "Υδρόγειος, αναζήτηση τοποθεσίας και ζωντανή εικόνα κατόπιν αποδοχής.",
+  "description": "LiveView με σταθερή αρχική οθόνη, υδρόγειο, αναζήτηση και θέση.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d3",
+  "start_url": "./?source=pwa&version=d4",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

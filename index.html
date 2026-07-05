@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiveView" />
   <meta name="description" content="LiveView — αναζήτηση τοποθεσίας και ζωντανή εικόνα κατόπιν αποδοχής." />
-  <title>LiveView D3</title>
+  <title>LiveView D4</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -17,6 +17,18 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+
+  <section id="startScreen" class="start-screen" aria-label="Αρχική οθόνη LiveView">
+    <div class="start-stars" aria-hidden="true"></div>
+    <div class="start-content">
+      <img class="start-logo" src="./icon-512.png" alt="LiveView" />
+      <h1>LiveView</h1>
+      <p>Δες τον κόσμο ζωντανά</p>
+      <button id="enterAppBtn" class="enter-app-btn" type="button">Είσοδος</button>
+      <small>Η θέση σου θα ζητηθεί αφού μπεις στην εφαρμογή.</small>
+    </div>
+  </section>
+
   <main class="globe-screen">
     <div id="map" aria-label="Υδρόγειος LiveView"></div>
     <div class="space-shade" aria-hidden="true"></div>

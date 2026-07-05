@@ -30,6 +30,8 @@ const map = new maplibregl.Map({
 
 map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: false }), "bottom-right");
 
+const startScreen = document.getElementById("startScreen");
+const enterAppBtn = document.getElementById("enterAppBtn");
 const availabilityBtn = document.getElementById("availabilityBtn");
 const statusLabel = availabilityBtn.querySelector(".status-label");
 const installBtn = document.getElementById("installBtn");
@@ -118,7 +120,18 @@ map.on("style.load", () => {
 map.on("load", () => {
   demoUsers.forEach(createUserMarker);
   renderUsers();
-  requestMyLocation({ keepGlobeView: true, silentFailure: false });
+});
+
+
+enterAppBtn.addEventListener("click", async () => {
+  enterAppBtn.disabled = true;
+  startScreen.classList.add("leaving");
+
+  window.setTimeout(() => {
+    startScreen.hidden = true;
+  }, 500);
+
+  await requestMyLocation({ keepGlobeView: true, silentFailure: false });
 });
 
 function createUserMarker(user) {
