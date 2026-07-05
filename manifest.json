@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "LiveView με σταθερή αρχική οθόνη, υδρόγειο, αναζήτηση και θέση.",
+  "description": "Υδρόγειος με 3D σημεία, αναζήτηση και διαθέσιμους χρήστες ανά περιοχή ή ακτίνα.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d4",
+  "start_url": "./?source=pwa&version=d5",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

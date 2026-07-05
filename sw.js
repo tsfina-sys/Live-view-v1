@@ -1,4 +1,4 @@
-const CACHE = "liveview-d4-start-screen-v1";
+const CACHE = "liveview-d5-landmarks-users-v1";
 const APP_SHELL = [
   "./",
   "./index.html",

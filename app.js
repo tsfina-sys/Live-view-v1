@@ -1,8 +1,53 @@
 const demoUsers = [
-  { id: 1, name: "Άννα", area: "Σύνταγμα, Αθήνα", lat: 37.9754, lng: 23.7348, status: "available", distance: "1,2 km" },
-  { id: 2, name: "Μάριος", area: "Μοναστηράκι, Αθήνα", lat: 37.9769, lng: 23.7258, status: "available", distance: "1,8 km" },
-  { id: 3, name: "Ελένη", area: "Κουκάκι, Αθήνα", lat: 37.9628, lng: 23.7241, status: "busy", distance: "2,6 km" },
-  { id: 4, name: "Νίκος", area: "Παγκράτι, Αθήνα", lat: 37.9694, lng: 23.7508, status: "available", distance: "3,1 km" }
+  { id: 1, name: "Άννα", area: "Σύνταγμα, Αθήνα", country: "Ελλάδα", lat: 37.9754, lng: 23.7348, status: "available" },
+  { id: 2, name: "Μάριος", area: "Μοναστηράκι, Αθήνα", country: "Ελλάδα", lat: 37.9769, lng: 23.7258, status: "available" },
+  { id: 3, name: "Ελένη", area: "Θεσσαλονίκη", country: "Ελλάδα", lat: 40.6401, lng: 22.9444, status: "available" },
+  { id: 4, name: "Νίκος", area: "Πάτρα", country: "Ελλάδα", lat: 38.2466, lng: 21.7346, status: "available" },
+  { id: 5, name: "Γιώργος", area: "Μυτιλήνη", country: "Ελλάδα", lat: 39.1067, lng: 26.5553, status: "available" },
+  { id: 6, name: "Μαρία", area: "Χανιά", country: "Ελλάδα", lat: 35.5138, lng: 24.0180, status: "available" },
+  { id: 7, name: "Claire", area: "Paris", country: "France", lat: 48.8566, lng: 2.3522, status: "available" },
+  { id: 8, name: "James", area: "London", country: "United Kingdom", lat: 51.5074, lng: -0.1278, status: "available" },
+  { id: 9, name: "Luca", area: "Rome", country: "Italy", lat: 41.9028, lng: 12.4964, status: "available" },
+  { id: 10, name: "Maya", area: "New York", country: "USA", lat: 40.7128, lng: -74.0060, status: "available" },
+  { id: 11, name: "Omar", area: "Cairo", country: "Egypt", lat: 30.0444, lng: 31.2357, status: "available" },
+  { id: 12, name: "Aiko", area: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503, status: "available" },
+  { id: 13, name: "Noah", area: "Sydney", country: "Australia", lat: -33.8688, lng: 151.2093, status: "available" },
+  { id: 14, name: "Rafael", area: "Rio de Janeiro", country: "Brazil", lat: -22.9068, lng: -43.1729, status: "available" },
+  { id: 15, name: "Layla", area: "Dubai", country: "UAE", lat: 25.2048, lng: 55.2708, status: "available" },
+  { id: 16, name: "Arjun", area: "New Delhi", country: "India", lat: 28.6139, lng: 77.2090, status: "available" },
+  { id: 17, name: "Sofia", area: "Madrid", country: "Spain", lat: 40.4168, lng: -3.7038, status: "available" },
+  { id: 18, name: "Daniel", area: "Berlin", country: "Germany", lat: 52.5200, lng: 13.4050, status: "available" }
+];
+
+const landmarks = [
+  { id: "parthenon", name: "Παρθενώνας", country: "Ελλάδα", lat: 37.9715, lng: 23.7267, minZoom: 1.0, importance: 1, icon: "🏛️", kind: "temple" },
+  { id: "eiffel", name: "Πύργος του Άιφελ", country: "Γαλλία", lat: 48.8584, lng: 2.2945, minZoom: 1.0, importance: 1, icon: "🗼", kind: "tower" },
+  { id: "liberty", name: "Άγαλμα της Ελευθερίας", country: "ΗΠΑ", lat: 40.6892, lng: -74.0445, minZoom: 1.0, importance: 1, icon: "🗽", kind: "modern" },
+  { id: "pyramids", name: "Πυραμίδες Γκίζας", country: "Αίγυπτος", lat: 29.9792, lng: 31.1342, minZoom: 1.0, importance: 1, icon: "🔺", kind: "ancient" },
+  { id: "colosseum", name: "Κολοσσαίο", country: "Ιταλία", lat: 41.8902, lng: 12.4922, minZoom: 1.2, importance: 1, icon: "🏟️", kind: "ancient" },
+  { id: "bigben", name: "Big Ben", country: "Ηνωμένο Βασίλειο", lat: 51.5007, lng: -0.1246, minZoom: 1.2, importance: 1, icon: "🕰️", kind: "tower" },
+  { id: "tajmahal", name: "Taj Mahal", country: "Ινδία", lat: 27.1751, lng: 78.0421, minZoom: 1.2, importance: 1, icon: "🕌", kind: "temple" },
+  { id: "greatwall", name: "Σινικό Τείχος", country: "Κίνα", lat: 40.4319, lng: 116.5704, minZoom: 1.2, importance: 1, icon: "🏯", kind: "ancient" },
+  { id: "sydneyopera", name: "Όπερα του Σίδνεϊ", country: "Αυστραλία", lat: -33.8568, lng: 151.2153, minZoom: 1.2, importance: 1, icon: "🎭", kind: "modern" },
+  { id: "christ", name: "Χριστός Λυτρωτής", country: "Βραζιλία", lat: -22.9519, lng: -43.2105, minZoom: 1.2, importance: 1, icon: "🗿", kind: "modern" },
+  { id: "burj", name: "Burj Khalifa", country: "ΗΑΕ", lat: 25.1972, lng: 55.2744, minZoom: 1.2, importance: 1, icon: "🏙️", kind: "tower" },
+  { id: "fuji", name: "Όρος Fuji", country: "Ιαπωνία", lat: 35.3606, lng: 138.7274, minZoom: 1.4, importance: 1, icon: "🗻", kind: "mountain" },
+  { id: "machupicchu", name: "Machu Picchu", country: "Περού", lat: -13.1631, lng: -72.5450, minZoom: 1.4, importance: 1, icon: "⛰️", kind: "ancient" },
+
+  { id: "meteora", name: "Μετέωρα", country: "Ελλάδα", lat: 39.7217, lng: 21.6306, minZoom: 4.0, importance: 2, icon: "⛰️", kind: "mountain" },
+  { id: "knossos", name: "Ανάκτορο Κνωσού", country: "Ελλάδα", lat: 35.2989, lng: 25.1631, minZoom: 4.7, importance: 2, icon: "🏺", kind: "ancient" },
+  { id: "white-tower", name: "Λευκός Πύργος", country: "Ελλάδα", lat: 40.6264, lng: 22.9484, minZoom: 5.3, importance: 2, icon: "🏰", kind: "tower" },
+  { id: "delphi", name: "Δελφοί", country: "Ελλάδα", lat: 38.4824, lng: 22.5010, minZoom: 5.8, importance: 2, icon: "🏛️", kind: "temple" },
+  { id: "olympia", name: "Αρχαία Ολυμπία", country: "Ελλάδα", lat: 37.6384, lng: 21.6300, minZoom: 5.8, importance: 2, icon: "🏟️", kind: "ancient" },
+  { id: "sounion", name: "Ναός Ποσειδώνα", country: "Ελλάδα", lat: 37.6500, lng: 24.0240, minZoom: 6.2, importance: 2, icon: "🏛️", kind: "temple" },
+  { id: "epidaurus", name: "Αρχαίο Θέατρο Επιδαύρου", country: "Ελλάδα", lat: 37.5964, lng: 23.0790, minZoom: 6.4, importance: 2, icon: "🎭", kind: "ancient" },
+  { id: "mystras", name: "Μυστράς", country: "Ελλάδα", lat: 37.0729, lng: 22.3696, minZoom: 6.6, importance: 2, icon: "🏰", kind: "ancient" },
+  { id: "navagio", name: "Ναυάγιο Ζακύνθου", country: "Ελλάδα", lat: 37.8594, lng: 20.6247, minZoom: 7.0, importance: 2, icon: "🏖️", kind: "modern" },
+  { id: "mytilene-castle", name: "Κάστρο Μυτιλήνης", country: "Ελλάδα", lat: 39.1103, lng: 26.5628, minZoom: 7.1, importance: 2, icon: "🏰", kind: "ancient" },
+  { id: "chania-lighthouse", name: "Φάρος Χανίων", country: "Ελλάδα", lat: 35.5195, lng: 24.0167, minZoom: 7.4, importance: 2, icon: "🗼", kind: "tower" },
+  { id: "rhodes-palace", name: "Παλάτι Ιπποτών", country: "Ελλάδα", lat: 36.4451, lng: 28.2241, minZoom: 7.4, importance: 2, icon: "🏰", kind: "ancient" },
+  { id: "corfu-fortress", name: "Παλαιό Φρούριο Κέρκυρας", country: "Ελλάδα", lat: 39.6244, lng: 19.9296, minZoom: 7.6, importance: 2, icon: "🏰", kind: "ancient" },
+  { id: "acropolis-lindos", name: "Ακρόπολη Λίνδου", country: "Ελλάδα", lat: 36.0917, lng: 28.0882, minZoom: 8.0, importance: 2, icon: "🏛️", kind: "temple" }
 ];
 
 let selectedUser = null;
@@ -13,9 +58,18 @@ let myPublicMarker = null;
 let searchMarker = null;
 let isAvailable = false;
 let myCoordinates = null;
+let myAreaName = null;
 let searchAbortController = null;
 let searchTimer = null;
 let deferredInstallPrompt = null;
+let selectedArea = null;
+let activeMode = "global";
+let nearbyRadiusKm = 25;
+let visibleUsers = [];
+let mapReady = false;
+
+const userMarkerEntries = new Map();
+const landmarkEntries = [];
 
 const map = new maplibregl.Map({
   container: "map",
@@ -24,31 +78,41 @@ const map = new maplibregl.Map({
   zoom: 1.35,
   minZoom: 0.5,
   maxZoom: 18,
+  maxPitch: 78,
   attributionControl: true,
-  renderWorldCopies: false
+  renderWorldCopies: false,
+  canvasContextAttributes: { antialias: true }
 });
-
-map.addControl(new maplibregl.NavigationControl({ showCompass: false, showZoom: false }), "bottom-right");
 
 const startScreen = document.getElementById("startScreen");
 const enterAppBtn = document.getElementById("enterAppBtn");
 const availabilityBtn = document.getElementById("availabilityBtn");
 const statusLabel = availabilityBtn.querySelector(".status-label");
 const installBtn = document.getElementById("installBtn");
+const searchWrap = document.getElementById("searchWrap");
+const searchToggleBtn = document.getElementById("searchToggleBtn");
 const searchForm = document.getElementById("searchForm");
 const placeSearch = document.getElementById("placeSearch");
 const clearSearchBtn = document.getElementById("clearSearchBtn");
 const searchResults = document.getElementById("searchResults");
 const globeBtn = document.getElementById("globeBtn");
+const areaBtn = document.getElementById("areaBtn");
 const locateBtn = document.getElementById("locateBtn");
 const focusLocationBtn = document.getElementById("focusLocationBtn");
 const cameraBtn = document.getElementById("cameraBtn");
 const peopleBtn = document.getElementById("peopleBtn");
+const modeTitle = document.getElementById("modeTitle");
+const modeDetails = document.getElementById("modeDetails");
+const onlineCount = document.getElementById("onlineCount");
+const radiusControl = document.getElementById("radiusControl");
+const radiusSelect = document.getElementById("radiusSelect");
 const locationCard = document.getElementById("locationCard");
 const locationTitle = document.getElementById("locationTitle");
 const locationDetails = document.getElementById("locationDetails");
 const locationSymbol = document.getElementById("locationSymbol");
 const peopleDialog = document.getElementById("peopleDialog");
+const peopleDialogTitle = document.getElementById("peopleDialogTitle");
+const peopleDialogSubtitle = document.getElementById("peopleDialogSubtitle");
 const closePeopleBtn = document.getElementById("closePeopleBtn");
 const requestDialog = document.getElementById("requestDialog");
 const requestName = document.getElementById("requestName");
@@ -115,13 +179,80 @@ if (!isRunningAsInstalledApp() && isIosDevice()) installBtn.hidden = false;
 
 map.on("style.load", () => {
   map.setProjection({ type: "globe" });
+
+  try {
+    if (!map.getSource("terrainSource")) {
+      map.addSource("terrainSource", {
+        type: "raster-dem",
+        url: "https://tiles.mapterhorn.com/tilejson.json",
+        tileSize: 512
+      });
+    }
+    map.setTerrain({ source: "terrainSource", exaggeration: 1.08 });
+  } catch (error) {
+    console.warn("3D terrain unavailable:", error);
+  }
+
+  addOptional3DBuildings();
 });
 
 map.on("load", () => {
-  demoUsers.forEach(createUserMarker);
-  renderUsers();
+  mapReady = true;
+  createUserMarkers();
+  createLandmarkMarkers();
+  activateMode("global", { moveMap: false });
+  updateLandmarkVisibility();
 });
 
+map.on("zoom", updateLandmarkVisibility);
+map.on("moveend", updateLandmarkVisibility);
+
+function addOptional3DBuildings() {
+  try {
+    if (map.getLayer("liveview-3d-buildings")) return;
+
+    const sources = map.getStyle()?.sources || {};
+    const sourceId = Object.keys(sources).find(id => {
+      const source = sources[id];
+      return source && source.type === "vector";
+    });
+
+    if (!sourceId) return;
+
+    map.addLayer({
+      id: "liveview-3d-buildings",
+      type: "fill-extrusion",
+      source: sourceId,
+      "source-layer": "building",
+      minzoom: 14,
+      paint: {
+        "fill-extrusion-color": [
+          "interpolate",
+          ["linear"],
+          ["get", "render_height"],
+          0, "#d9e2ed",
+          80, "#9fb4ca",
+          250, "#6e8fae"
+        ],
+        "fill-extrusion-height": [
+          "coalesce",
+          ["get", "render_height"],
+          ["get", "height"],
+          8
+        ],
+        "fill-extrusion-base": [
+          "coalesce",
+          ["get", "render_min_height"],
+          ["get", "min_height"],
+          0
+        ],
+        "fill-extrusion-opacity": 0.72
+      }
+    });
+  } catch (error) {
+    console.warn("3D buildings unavailable:", error);
+  }
+}
 
 enterAppBtn.addEventListener("click", async () => {
   enterAppBtn.disabled = true;
@@ -134,54 +265,85 @@ enterAppBtn.addEventListener("click", async () => {
   await requestMyLocation({ keepGlobeView: true, silentFailure: false });
 });
 
-function createUserMarker(user) {
-  const el = document.createElement("button");
-  el.className = `marker ${user.status === "busy" ? "busy" : ""}`;
-  el.type = "button";
-  el.textContent = user.name.charAt(0);
-  el.title = `${user.name} — ${user.area}`;
-  el.addEventListener("click", () => openRequest(user));
+function createUserMarkers() {
+  demoUsers.forEach(user => {
+    const el = document.createElement("button");
+    el.className = "user-marker";
+    el.type = "button";
+    el.textContent = user.name.charAt(0);
+    el.title = `${user.name} — ${user.area}`;
+    el.addEventListener("click", () => openRequest(user));
 
-  new maplibregl.Marker({ element: el })
-    .setLngLat([user.lng, user.lat])
-    .addTo(map);
+    const marker = new maplibregl.Marker({ element: el })
+      .setLngLat([user.lng, user.lat])
+      .addTo(map);
+
+    userMarkerEntries.set(user.id, { user, marker, element: el });
+  });
 }
 
-function renderUsers() {
-  const list = document.getElementById("userList");
-  const onlineCount = document.getElementById("onlineCount");
-  list.innerHTML = "";
-
-  demoUsers.forEach(user => {
-    const card = document.createElement("article");
-    card.className = "user-card";
-    card.innerHTML = `
-      <div class="avatar">${user.name.charAt(0)}</div>
-      <div class="user-main">
-        <strong>${user.name}</strong>
-        <small>${user.area} · ${user.distance}</small>
-      </div>
-      <button class="request-btn" ${user.status === "busy" ? "disabled" : ""}>
-        ${user.status === "busy" ? "Σε μετάδοση" : "Αίτημα"}
-      </button>
+function createLandmarkMarkers() {
+  landmarks.forEach(landmark => {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = [
+      "landmark-marker",
+      landmark.kind || "modern",
+      landmark.importance > 1 ? "secondary" : ""
+    ].filter(Boolean).join(" ");
+    el.setAttribute("aria-label", `${landmark.name}, ${landmark.country}`);
+    el.innerHTML = `
+      <span class="landmark-model">
+        <span class="landmark-icon">${landmark.icon}</span>
+      </span>
+      <span class="landmark-label">${escapeHtml(landmark.name)}</span>
     `;
-    card.querySelector(".request-btn").addEventListener("click", () => openRequest(user));
-    list.appendChild(card);
-  });
 
-  onlineCount.textContent = `${demoUsers.filter(user => user.status === "available").length} διαθέσιμοι`;
+    const popup = new maplibregl.Popup({
+      className: "landmark-popup",
+      closeButton: false,
+      offset: 34
+    }).setHTML(`<strong>${escapeHtml(landmark.name)}</strong><small>${escapeHtml(landmark.country)}</small>`);
+
+    const marker = new maplibregl.Marker({
+      element: el,
+      anchor: "bottom"
+    })
+      .setLngLat([landmark.lng, landmark.lat])
+      .setPopup(popup)
+      .addTo(map);
+
+    landmarkEntries.push({ landmark, marker, element: el });
+  });
+}
+
+function updateLandmarkVisibility() {
+  if (!mapReady) return;
+
+  const zoom = map.getZoom();
+  const scale = Math.min(1.18, Math.max(0.62, 0.64 + zoom * 0.055));
+
+  landmarkEntries.forEach(entry => {
+    const { landmark, element } = entry;
+    const visible = zoom >= landmark.minZoom;
+
+    element.classList.toggle("hidden-landmark", !visible);
+    element.style.setProperty("--landmark-scale", scale.toFixed(2));
+
+    const label = element.querySelector(".landmark-label");
+    if (label) {
+      const showLabel = landmark.importance === 1 || zoom >= landmark.minZoom + 0.8;
+      label.hidden = !showLabel;
+    }
+  });
 }
 
 function openRequest(user) {
-  if (user.status === "busy") {
-    showToast("Ο χρήστης βρίσκεται ήδη σε μετάδοση.");
-    return;
-  }
-
   if (peopleDialog.open) peopleDialog.close();
+
   selectedUser = user;
   requestName.textContent = `Αίτημα προς ${user.name}`;
-  requestLocation.textContent = user.area;
+  requestLocation.textContent = `${user.area}, ${user.country}`;
   requestAvatar.textContent = user.name.charAt(0);
   requestMessage.value = "";
   requestDialog.showModal();
@@ -194,20 +356,44 @@ function updateLocationCard({ title, details, ready = false, error = false }) {
   locationSymbol.textContent = error ? "!" : ready ? "●" : "◎";
 }
 
-function formatCoordinates(latitude, longitude) {
-  return `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-}
-
 function createExactLocationMarker(longitude, latitude) {
   if (myExactMarker) myExactMarker.remove();
 
   const el = document.createElement("div");
-  el.className = "marker me";
+  el.className = "user-marker me";
   el.title = "Η ακριβής θέση σου — ορατή μόνο σε εσένα";
 
   myExactMarker = new maplibregl.Marker({ element: el })
     .setLngLat([longitude, latitude])
     .addTo(map);
+}
+
+async function reverseGeocode(latitude, longitude) {
+  const url = new URL("https://nominatim.openstreetmap.org/reverse");
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("lat", String(latitude));
+  url.searchParams.set("lon", String(longitude));
+  url.searchParams.set("zoom", "12");
+  url.searchParams.set("accept-language", "el,en");
+
+  try {
+    const response = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    const address = result.address || {};
+
+    return (
+      address.city ||
+      address.town ||
+      address.village ||
+      address.municipality ||
+      address.county ||
+      address.state ||
+      "Η θέση μου"
+    );
+  } catch (error) {
+    return "Η θέση μου";
+  }
 }
 
 function requestMyLocation({ keepGlobeView = true, silentFailure = false } = {}) {
@@ -228,7 +414,7 @@ function requestMyLocation({ keepGlobeView = true, silentFailure = false } = {})
     });
 
     navigator.geolocation.getCurrentPosition(
-      position => {
+      async position => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const accuracy = Math.round(position.coords.accuracy || 0);
@@ -236,18 +422,23 @@ function requestMyLocation({ keepGlobeView = true, silentFailure = false } = {})
         myCoordinates = { latitude, longitude, accuracy };
         createExactLocationMarker(longitude, latitude);
 
+        myAreaName = await reverseGeocode(latitude, longitude);
+
         updateLocationCard({
-          title: formatCoordinates(latitude, longitude),
-          details: accuracy ? `Ακρίβεια περίπου ±${accuracy} m` : "Η θέση εντοπίστηκε.",
+          title: myAreaName,
+          details: accuracy
+            ? `Η θέση εντοπίστηκε • ακρίβεια περίπου ±${accuracy} m`
+            : "Η θέση εντοπίστηκε.",
           ready: true
         });
 
         map.easeTo({
           center: [longitude, latitude],
-          zoom: keepGlobeView ? 1.8 : 14,
+          zoom: keepGlobeView ? 1.8 : 13,
           duration: 1800
         });
 
+        if (activeMode === "nearby") refreshUsers();
         resolve(true);
       },
       error => {
@@ -256,7 +447,7 @@ function requestMyLocation({ keepGlobeView = true, silentFailure = false } = {})
           updateLocationCard({
             title: denied ? "Δεν δόθηκε άδεια τοποθεσίας" : "Αδυναμία εντοπισμού",
             details: denied
-              ? "Πάτησε ◎ και επίτρεψε την τοποθεσία από τις ρυθμίσεις."
+              ? "Επίτρεψε την τοποθεσία από τις ρυθμίσεις της εφαρμογής."
               : "Έλεγξε ότι το GPS είναι ενεργό και δοκίμασε ξανά.",
             error: true
           });
@@ -281,7 +472,8 @@ function focusOnMyLocation() {
 
   map.flyTo({
     center: [myCoordinates.longitude, myCoordinates.latitude],
-    zoom: 14,
+    zoom: 13,
+    pitch: 50,
     duration: 1800
   });
 }
@@ -298,7 +490,7 @@ availabilityBtn.addEventListener("click", async () => {
     const publicLongitude = privacyOffset(myCoordinates.longitude);
     const publicLatitude = privacyOffset(myCoordinates.latitude);
     const el = document.createElement("div");
-    el.className = "marker";
+    el.className = "user-marker public-me";
     el.textContent = "Ε";
     el.title = "Η προσεγγιστική δημόσια θέση σου";
 
@@ -327,24 +519,188 @@ availabilityBtn.addEventListener("click", async () => {
   showToast("Δεν εμφανίζεσαι πλέον ως διαθέσιμος.");
 });
 
-globeBtn.addEventListener("click", () => {
-  searchResults.hidden = true;
-  map.flyTo({
-    center: myCoordinates
-      ? [myCoordinates.longitude, myCoordinates.latitude]
-      : [23.7, 38.0],
-    zoom: 1.35,
-    bearing: 0,
-    pitch: 0,
-    duration: 1800
-  });
-});
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const toRadians = value => value * Math.PI / 180;
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(lat2 - lat1);
+  const dLng = toRadians(lng2 - lng1);
 
-locateBtn.addEventListener("click", () => requestMyLocation({ keepGlobeView: false }));
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(lat1)) *
+    Math.cos(toRadians(lat2)) *
+    Math.sin(dLng / 2) ** 2;
+
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function isInsideBounds(user, bounds) {
+  if (!bounds) return false;
+
+  const [south, north, west, east] = bounds;
+  const latitudeInside = user.lat >= south && user.lat <= north;
+
+  if (west <= east) {
+    return latitudeInside && user.lng >= west && user.lng <= east;
+  }
+
+  return latitudeInside && (user.lng >= west || user.lng <= east);
+}
+
+function getUsersForCurrentMode() {
+  const available = demoUsers.filter(user => user.status === "available");
+
+  if (activeMode === "global") return available;
+
+  if (activeMode === "area") {
+    if (!selectedArea) return [];
+    return available.filter(user => isInsideBounds(user, selectedArea.bounds));
+  }
+
+  if (activeMode === "nearby") {
+    if (!myCoordinates) return [];
+
+    return available.filter(user =>
+      haversineKm(
+        myCoordinates.latitude,
+        myCoordinates.longitude,
+        user.lat,
+        user.lng
+      ) <= nearbyRadiusKm
+    );
+  }
+
+  return available;
+}
+
+function refreshUsers() {
+  visibleUsers = getUsersForCurrentMode();
+  const visibleIds = new Set(visibleUsers.map(user => user.id));
+
+  userMarkerEntries.forEach(({ user, element }) => {
+    element.classList.toggle("hidden-marker", !visibleIds.has(user.id));
+  });
+
+  onlineCount.textContent = String(visibleUsers.length);
+
+  if (activeMode === "global") {
+    modeTitle.textContent = "Υδρόγειος";
+    modeDetails.textContent = "Όλοι οι διαθέσιμοι χρήστες";
+    peopleDialogSubtitle.textContent = "Διαθέσιμοι χρήστες από όλο τον κόσμο.";
+  } else if (activeMode === "area") {
+    const areaName = selectedArea?.name || "Επιλεγμένη περιοχή";
+    modeTitle.textContent = "Περιοχή";
+    modeDetails.textContent = areaName;
+    peopleDialogSubtitle.textContent = `Διαθέσιμοι χρήστες στην περιοχή: ${areaName}.`;
+  } else {
+    modeTitle.textContent = "Κοντά μου";
+    modeDetails.textContent = `Σε ακτίνα ${nearbyRadiusKm} km`;
+    peopleDialogSubtitle.textContent = `Διαθέσιμοι χρήστες σε ακτίνα ${nearbyRadiusKm} km από τη θέση σου.`;
+  }
+
+  renderUsersList();
+}
+
+function renderUsersList() {
+  const list = document.getElementById("userList");
+  list.innerHTML = "";
+
+  if (visibleUsers.length === 0) {
+    list.innerHTML = `<div class="user-list-empty">Δεν υπάρχουν δοκιμαστικοί διαθέσιμοι χρήστες σε αυτή την επιλογή.</div>`;
+    return;
+  }
+
+  visibleUsers.forEach(user => {
+    const distance = myCoordinates
+      ? haversineKm(myCoordinates.latitude, myCoordinates.longitude, user.lat, user.lng)
+      : null;
+
+    const card = document.createElement("article");
+    card.className = "user-card";
+    card.innerHTML = `
+      <div class="avatar">${escapeHtml(user.name.charAt(0))}</div>
+      <div class="user-main">
+        <strong>${escapeHtml(user.name)}</strong>
+        <small>${escapeHtml(user.area)}, ${escapeHtml(user.country)}${distance !== null ? ` • ${distance.toFixed(distance < 10 ? 1 : 0)} km` : ""}</small>
+      </div>
+      <button class="request-btn" type="button">Αίτημα</button>
+    `;
+    card.querySelector(".request-btn").addEventListener("click", () => openRequest(user));
+    list.appendChild(card);
+  });
+}
+
+function updateModeButtons() {
+  globeBtn.classList.toggle("active", activeMode === "global");
+  areaBtn.classList.toggle("active", activeMode === "area");
+  locateBtn.classList.toggle("active", activeMode === "nearby");
+  radiusControl.hidden = activeMode !== "nearby";
+}
+
+async function activateMode(mode, { moveMap = true } = {}) {
+  if (mode === "area" && !selectedArea) {
+    openSearch();
+    showToast("Αναζήτησε και επίλεξε πρώτα μια περιοχή.");
+    return;
+  }
+
+  if (mode === "nearby" && !myCoordinates) {
+    const located = await requestMyLocation({ keepGlobeView: false });
+    if (!located) return;
+  }
+
+  activeMode = mode;
+  updateModeButtons();
+  refreshUsers();
+
+  if (!moveMap) return;
+
+  if (mode === "global") {
+    map.flyTo({
+      center: myCoordinates
+        ? [myCoordinates.longitude, myCoordinates.latitude]
+        : [23.7, 38.0],
+      zoom: 1.35,
+      pitch: 0,
+      bearing: 0,
+      duration: 1800
+    });
+  } else if (mode === "area" && selectedArea) {
+    flyToSelectedArea(selectedArea);
+  } else if (mode === "nearby") {
+    focusOnMyLocation();
+  }
+}
+
+globeBtn.addEventListener("click", () => activateMode("global"));
+areaBtn.addEventListener("click", () => activateMode("area"));
+locateBtn.addEventListener("click", () => activateMode("nearby"));
 focusLocationBtn.addEventListener("click", focusOnMyLocation);
 
-peopleBtn.addEventListener("click", () => peopleDialog.showModal());
-closePeopleBtn.addEventListener("click", () => peopleDialog.close());
+radiusSelect.addEventListener("change", () => {
+  nearbyRadiusKm = Number(radiusSelect.value);
+  if (activeMode === "nearby") refreshUsers();
+});
+
+function openSearch() {
+  searchWrap.classList.add("open");
+  searchToggleBtn.classList.add("active");
+  window.setTimeout(() => placeSearch.focus(), 100);
+}
+
+function closeSearch() {
+  searchWrap.classList.remove("open");
+  searchToggleBtn.classList.remove("active");
+  searchResults.hidden = true;
+}
+
+searchToggleBtn.addEventListener("click", () => {
+  if (searchWrap.classList.contains("open")) {
+    closeSearch();
+  } else {
+    openSearch();
+  }
+});
 
 function setSearchMessage(message) {
   searchResults.innerHTML = `<div class="search-message">${message}</div>`;
@@ -366,7 +722,7 @@ async function searchPlaces(query) {
 
   const url = new URL("https://nominatim.openstreetmap.org/search");
   url.searchParams.set("format", "jsonv2");
-  url.searchParams.set("limit", "6");
+  url.searchParams.set("limit", "7");
   url.searchParams.set("addressdetails", "1");
   url.searchParams.set("accept-language", "el,en");
   url.searchParams.set("q", cleanQuery);
@@ -374,7 +730,7 @@ async function searchPlaces(query) {
   try {
     const response = await fetch(url, {
       signal: searchAbortController.signal,
-      headers: { "Accept": "application/json" }
+      headers: { Accept: "application/json" }
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -401,6 +757,7 @@ function renderSearchResults(results) {
     const parts = label.split(",");
     const primary = parts.shift()?.trim() || label;
     const secondary = parts.join(",").trim();
+    const rawBounds = Array.isArray(result.boundingbox) ? result.boundingbox.map(Number) : null;
 
     const button = document.createElement("button");
     button.type = "button";
@@ -415,7 +772,13 @@ function renderSearchResults(results) {
     `;
 
     button.addEventListener("click", () => {
-      selectSearchResult({ latitude, longitude, label, primary });
+      selectSearchResult({
+        latitude,
+        longitude,
+        label,
+        primary,
+        bounds: rawBounds
+      });
     });
 
     searchResults.appendChild(button);
@@ -433,15 +796,43 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function selectSearchResult({ latitude, longitude, label, primary }) {
+function normalizeAreaBounds(latitude, longitude, bounds) {
+  if (bounds && bounds.length === 4 && bounds.every(Number.isFinite)) {
+    const [south, north, west, east] = bounds;
+    const latSpan = Math.abs(north - south);
+    const lngSpan = Math.abs(east - west);
+
+    if (latSpan >= 0.04 || lngSpan >= 0.04) {
+      return [south, north, west, east];
+    }
+  }
+
+  const latDelta = 0.65;
+  const lngDelta = 0.85;
+  return [
+    latitude - latDelta,
+    latitude + latDelta,
+    longitude - lngDelta,
+    longitude + lngDelta
+  ];
+}
+
+function selectSearchResult({ latitude, longitude, label, primary, bounds }) {
   placeSearch.value = primary;
   clearSearchBtn.hidden = false;
-  searchResults.hidden = true;
+
+  selectedArea = {
+    name: primary,
+    label,
+    latitude,
+    longitude,
+    bounds: normalizeAreaBounds(latitude, longitude, bounds)
+  };
 
   if (searchMarker) searchMarker.remove();
 
   const el = document.createElement("div");
-  el.className = "marker search-marker";
+  el.className = "search-marker";
   el.textContent = "⌖";
   el.title = label;
 
@@ -449,10 +840,33 @@ function selectSearchResult({ latitude, longitude, label, primary }) {
     .setLngLat([longitude, latitude])
     .addTo(map);
 
+  closeSearch();
+  activeMode = "area";
+  updateModeButtons();
+  refreshUsers();
+  flyToSelectedArea(selectedArea);
+}
+
+function flyToSelectedArea(area) {
+  if (area.bounds) {
+    const [south, north, west, east] = area.bounds;
+    map.fitBounds(
+      [[west, south], [east, north]],
+      {
+        padding: { top: 150, right: 80, bottom: 160, left: 80 },
+        maxZoom: 11,
+        pitch: 38,
+        duration: 1800
+      }
+    );
+    return;
+  }
+
   map.flyTo({
-    center: [longitude, latitude],
-    zoom: 11.5,
-    duration: 1900
+    center: [area.longitude, area.latitude],
+    zoom: 9,
+    pitch: 38,
+    duration: 1800
   });
 }
 
@@ -475,12 +889,6 @@ placeSearch.addEventListener("input", () => {
   searchTimer = setTimeout(() => searchPlaces(query), 500);
 });
 
-placeSearch.addEventListener("focus", () => {
-  if (searchResults.children.length && placeSearch.value.trim().length >= 2) {
-    searchResults.hidden = false;
-  }
-});
-
 clearSearchBtn.addEventListener("click", () => {
   placeSearch.value = "";
   clearSearchBtn.hidden = true;
@@ -492,9 +900,13 @@ clearSearchBtn.addEventListener("click", () => {
   placeSearch.focus();
 });
 
-document.addEventListener("pointerdown", event => {
-  if (!event.target.closest(".search-wrap")) searchResults.hidden = true;
+peopleBtn.addEventListener("click", () => {
+  peopleDialogTitle.textContent = `${visibleUsers.length} διαθέσιμοι χρήστες`;
+  renderUsersList();
+  peopleDialog.showModal();
 });
+
+closePeopleBtn.addEventListener("click", () => peopleDialog.close());
 
 sendRequestBtn.addEventListener("click", event => {
   event.preventDefault();

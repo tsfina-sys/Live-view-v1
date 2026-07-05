@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiveView" />
-  <meta name="description" content="LiveView — αναζήτηση τοποθεσίας και ζωντανή εικόνα κατόπιν αποδοχής." />
-  <title>LiveView D4</title>
+  <meta name="description" content="LiveView — 3D σημεία ενδιαφέροντος, αναζήτηση και διαθέσιμοι χρήστες." />
+  <title>LiveView D5</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-
   <section id="startScreen" class="start-screen" aria-label="Αρχική οθόνη LiveView">
     <div class="start-stars" aria-hidden="true"></div>
     <div class="start-content">
@@ -53,7 +52,7 @@
       </div>
     </header>
 
-    <section class="search-wrap" aria-label="Αναζήτηση τοποθεσίας">
+    <section id="searchWrap" class="search-wrap" aria-label="Αναζήτηση τοποθεσίας">
       <form id="searchForm" class="search-bar" autocomplete="off">
         <span class="search-icon" aria-hidden="true">⌕</span>
         <input
@@ -71,23 +70,48 @@
     </section>
 
     <div class="map-tools" aria-label="Εργαλεία χάρτη">
-      <button id="globeBtn" class="round-btn" type="button" title="Προβολή υδρογείου" aria-label="Προβολή υδρογείου">🌐</button>
-      <button id="locateBtn" class="round-btn" type="button" title="Η θέση μου" aria-label="Η θέση μου">◎</button>
-      <button id="cameraBtn" class="round-btn" type="button" title="Δοκιμή κάμερας" aria-label="Δοκιμή κάμερας">📷</button>
-      <button id="peopleBtn" class="round-btn" type="button" title="Διαθέσιμοι χρήστες" aria-label="Διαθέσιμοι χρήστες">👥</button>
+      <button id="searchToggleBtn" class="tool-btn text-tool" type="button"
+              title="Αναζήτηση" aria-label="Άνοιγμα αναζήτησης">SRCH</button>
+      <button id="globeBtn" class="tool-btn active" type="button"
+              title="Χρήστες σε όλη τη Γη" aria-label="Υδρόγειος">🌐</button>
+      <button id="areaBtn" class="tool-btn text-tool" type="button"
+              title="Χρήστες επιλεγμένης περιοχής" aria-label="Περιοχή">AREA</button>
+      <button id="locateBtn" class="tool-btn" type="button"
+              title="Χρήστες κοντά στη θέση μου" aria-label="Κοντά μου">◎</button>
+      <button id="cameraBtn" class="tool-btn" type="button"
+              title="Δοκιμή κάμερας" aria-label="Δοκιμή κάμερας">📷</button>
+      <button id="peopleBtn" class="tool-btn" type="button"
+              title="Λίστα διαθέσιμων χρηστών" aria-label="Διαθέσιμοι χρήστες">👥</button>
     </div>
 
-    <div class="online-pill">
-      <span class="online-dot"></span>
-      <span id="onlineCount">0 διαθέσιμοι</span>
-    </div>
+    <section class="mode-panel" aria-live="polite">
+      <div class="mode-line">
+        <span class="online-dot"></span>
+        <div>
+          <strong id="modeTitle">Υδρόγειος</strong>
+          <small id="modeDetails">Όλοι οι διαθέσιμοι χρήστες</small>
+        </div>
+        <span id="onlineCount" class="mode-count">0</span>
+      </div>
+
+      <label id="radiusControl" class="radius-control" hidden>
+        <span>Εμβέλεια</span>
+        <select id="radiusSelect">
+          <option value="5">5 km</option>
+          <option value="10">10 km</option>
+          <option value="25" selected>25 km</option>
+          <option value="50">50 km</option>
+          <option value="100">100 km</option>
+        </select>
+      </label>
+    </section>
 
     <section id="locationCard" class="location-card" aria-live="polite">
       <div class="location-symbol" id="locationSymbol">◎</div>
       <div class="location-copy">
         <span class="eyebrow">Η ΘΕΣΗ ΜΟΥ</span>
-        <strong id="locationTitle">Εντοπισμός θέσης…</strong>
-        <small id="locationDetails">Δώσε άδεια τοποθεσίας όταν ζητηθεί.</small>
+        <strong id="locationTitle">Δεν έχει εντοπιστεί ακόμη</strong>
+        <small id="locationDetails">Η ακριβής θέση δεν εμφανίζεται δημόσια.</small>
       </div>
       <button id="focusLocationBtn" class="focus-btn" type="button" aria-label="Εστίαση στη θέση μου">➜</button>
     </section>
@@ -98,8 +122,8 @@
   <dialog id="peopleDialog" class="dialog people-dialog">
     <div class="dialog-heading">
       <div>
-        <h2>Διαθέσιμοι χρήστες</h2>
-        <p>Δοκιμαστικά σημεία στην περιοχή της Αθήνας.</p>
+        <h2 id="peopleDialogTitle">Διαθέσιμοι χρήστες</h2>
+        <p id="peopleDialogSubtitle">Η λίστα ακολουθεί την τρέχουσα επιλογή χάρτη.</p>
       </div>
       <button id="closePeopleBtn" class="dialog-close static-close" type="button" aria-label="Κλείσιμο">×</button>
     </div>
