@@ -529,105 +529,209 @@ button { cursor: pointer; }
   50% { box-shadow: 0 0 0 13px rgba(39,136,255,0), 0 5px 18px rgba(0,0,0,.45); }
 }
 
-/* 3D landmark markers */
+/* True 3D landmark miniatures */
 .landmark-marker {
   --landmark-scale: 1;
   position: relative;
-  width: 64px;
-  height: 72px;
-  transform: translate(-50%, -88%) scale(var(--landmark-scale));
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translate(-50%, -100%) scale(var(--landmark-scale));
   transform-origin: 50% 100%;
   pointer-events: auto;
-  filter: drop-shadow(0 12px 10px rgba(0,0,0,.42));
   transition: opacity .22s ease, transform .22s ease;
+  filter: drop-shadow(0 10px 12px rgba(0,0,0,.38));
 }
-
 .landmark-marker.hidden-landmark {
   opacity: 0;
   pointer-events: none;
 }
-
-.landmark-model {
+.landmark-base {
   position: absolute;
   left: 50%;
-  bottom: 10px;
-  width: 52px;
-  min-height: 47px;
-  transform: translateX(-50%) perspective(160px) rotateX(-10deg) rotateY(-8deg);
-  transform-style: preserve-3d;
-  border: 1px solid rgba(255,255,255,.45);
-  border-radius: 13px 13px 10px 10px;
-  display: grid;
-  place-items: center;
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.98), rgba(207,219,237,.82) 58%, rgba(111,136,174,.92));
-  color: #101a2a;
-  box-shadow:
-    inset -8px -7px 14px rgba(18,44,80,.19),
-    inset 6px 5px 10px rgba(255,255,255,.76),
-    0 8px 0 rgba(31,48,73,.72),
-    0 12px 20px rgba(0,0,0,.36);
+  bottom: 0;
+  width: 28px;
+  height: 7px;
+  transform: translateX(-50%) perspective(80px) rotateX(72deg);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(18,32,50,.88), rgba(4,10,18,.28));
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
 }
-
-.landmark-model::before {
-  content: "";
-  position: absolute;
-  inset: auto 7px -7px;
-  height: 8px;
-  border-radius: 0 0 10px 10px;
-  background: linear-gradient(90deg, #4f6687, #21334f);
-  transform: translateZ(-2px);
-}
-
-.landmark-icon {
-  display: block;
-  font-size: 1.82rem;
-  line-height: 1;
-  transform: translateZ(12px);
-  text-shadow: 0 2px 0 rgba(255,255,255,.55);
-}
-
-.landmark-label {
+.landmark-3d {
   position: absolute;
   left: 50%;
-  top: 63px;
-  max-width: 128px;
+  bottom: 6px;
+  width: 30px;
+  height: 30px;
   transform: translateX(-50%);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 7px;
-  padding: 3px 6px;
-  background: rgba(5,13,25,.84);
-  color: white;
-  box-shadow: 0 5px 14px rgba(0,0,0,.30);
-  font-size: .55rem;
-  font-weight: 900;
-  line-height: 1.15;
-  text-align: center;
-  white-space: nowrap;
-  backdrop-filter: blur(6px);
+  transform-style: preserve-3d;
+}
+.landmark-shape {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform-style: preserve-3d;
+}
+.landmark-marker.landmark-major { z-index: 3; }
+.landmark-marker.landmark-minor { z-index: 2; }
+
+/* Temple */
+.landmark-marker.temple .temple-body {
+  width: 24px;
+  height: 14px;
+  margin-left: -12px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #f6edd7, #ccb889 70%, #8e774d);
+  box-shadow: inset -3px -3px 6px rgba(88,68,34,.22), inset 2px 2px 4px rgba(255,255,255,.58);
+}
+.landmark-marker.temple .temple-roof {
+  width: 28px;
+  height: 8px;
+  margin-left: -14px;
+  bottom: 12px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, #fff4d1, #b79758);
+  transform: perspective(90px) rotateX(18deg) translateZ(8px);
+}
+.landmark-marker.temple .temple-column {
+  width: 3px;
+  height: 10px;
+  bottom: 2px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, #fff6dd, #bda16e);
+  box-shadow: inset -1px 0 2px rgba(79,58,22,.25);
+}
+.landmark-marker.temple .c1 { margin-left: -8px; }
+.landmark-marker.temple .c2 { margin-left: -3px; }
+.landmark-marker.temple .c3 { margin-left: 2px; }
+.landmark-marker.temple .c4 { margin-left: 7px; }
+
+/* Tower */
+.landmark-marker.tower .tower-shaft {
+  width: 10px;
+  height: 19px;
+  margin-left: -5px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #eef6ff, #9ab8d5 62%, #577290);
+  box-shadow: inset -2px -2px 4px rgba(37,59,80,.25), inset 2px 2px 3px rgba(255,255,255,.58);
+}
+.landmark-marker.tower .tower-top {
+  width: 18px;
+  height: 6px;
+  margin-left: -9px;
+  bottom: 16px;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, #f2f8ff, #83a6ca);
+  transform: perspective(90px) rotateX(12deg) translateZ(7px);
+}
+.landmark-marker.tower .tower-spire {
+  width: 2px;
+  height: 8px;
+  margin-left: -1px;
+  bottom: 22px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, #f6fbff, #84a8cf);
 }
 
-.landmark-marker.secondary .landmark-model {
-  width: 45px;
-  min-height: 41px;
+/* Castle */
+.landmark-marker.castle .castle-body {
+  width: 22px;
+  height: 14px;
+  margin-left: -11px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #f0f3f7, #abb6c3 68%, #657485);
+  box-shadow: inset -2px -2px 4px rgba(43,58,75,.20), inset 2px 2px 4px rgba(255,255,255,.48);
 }
-.landmark-marker.secondary .landmark-icon { font-size: 1.5rem; }
-.landmark-marker.secondary .landmark-label { top: 57px; font-size: .5rem; }
+.landmark-marker.castle .castle-turret {
+  width: 6px;
+  height: 16px;
+  bottom: 6px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, #f4f7fb, #99a7b6 68%, #5b6979);
+}
+.landmark-marker.castle .t1 { margin-left: -11px; }
+.landmark-marker.castle .t2 { margin-left: 5px; }
+.landmark-marker.castle .castle-flag {
+  width: 6px;
+  height: 4px;
+  margin-left: 9px;
+  bottom: 19px;
+  clip-path: polygon(0 0, 100% 30%, 0 100%);
+  background: linear-gradient(180deg, #ff7a7a, #b02323);
+}
 
-.landmark-marker.temple .landmark-model {
-  background: linear-gradient(145deg, #fff7d7, #d8c791 62%, #8d7845);
+/* Mountain */
+.landmark-marker.mountain .mountain-back {
+  width: 26px;
+  height: 18px;
+  margin-left: -13px;
+  clip-path: polygon(0 100%, 46% 8%, 100% 100%);
+  background: linear-gradient(180deg, #d9ecef, #73928d 70%, #405752);
 }
-.landmark-marker.tower .landmark-model {
-  background: linear-gradient(145deg, #e7f3ff, #93b5dc 62%, #3c5b7d);
+.landmark-marker.mountain .mountain-front {
+  width: 18px;
+  height: 15px;
+  margin-left: -9px;
+  clip-path: polygon(0 100%, 40% 12%, 100% 100%);
+  background: linear-gradient(180deg, #f7fbfb, #a2c5be 70%, #4f6a63);
+  bottom: 1px;
 }
-.landmark-marker.mountain .landmark-model {
-  background: linear-gradient(145deg, #eef5f7, #86a49d 60%, #3d554f);
+
+/* Ancient / pyramid */
+.landmark-marker.ancient .pyramid {
+  width: 24px;
+  height: 18px;
+  margin-left: -12px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, #f8e1aa, #d1ab5c 65%, #86652d);
+  transform: perspective(90px) rotateX(10deg);
 }
-.landmark-marker.modern .landmark-model {
-  background: linear-gradient(145deg, #dff7ff, #7eb6c9 60%, #315969);
+.landmark-marker.ancient .stone {
+  width: 16px;
+  height: 4px;
+  margin-left: -8px;
+  bottom: -1px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #d9bc7b, #8c6a33);
 }
-.landmark-marker.ancient .landmark-model {
-  background: linear-gradient(145deg, #ffe7bd, #c99559 60%, #70431f);
+
+/* Modern monument */
+.landmark-marker.modern .modern-body {
+  width: 12px;
+  height: 18px;
+  margin-left: -6px;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, #dff6ff, #89bccf 70%, #3e6878);
+  box-shadow: inset -2px -2px 4px rgba(38,63,73,.24), inset 2px 2px 4px rgba(255,255,255,.52);
+}
+.landmark-marker.modern .modern-crown {
+  width: 18px;
+  height: 8px;
+  margin-left: -9px;
+  bottom: 16px;
+  border-radius: 50% 50% 18% 18%;
+  background: linear-gradient(180deg, #f3fbff, #7fb2c6);
+}
+
+/* Stadium */
+.landmark-marker.stadium .stadium-bowl {
+  width: 26px;
+  height: 12px;
+  margin-left: -13px;
+  border-radius: 50% / 62%;
+  background: radial-gradient(circle at 50% 42%, #69bf66 0 34%, #dfe8f1 35% 55%, #90a4bb 56% 100%);
+  border: 2px solid #5e738e;
+  transform: perspective(90px) rotateX(64deg);
+}
+.landmark-marker.stadium .stadium-base {
+  width: 30px;
+  height: 5px;
+  margin-left: -15px;
+  bottom: -1px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #72859d, #44566f);
 }
 
 .landmark-popup .maplibregl-popup-content {
@@ -641,6 +745,7 @@ button { cursor: pointer; }
 .landmark-popup .maplibregl-popup-tip { border-top-color: rgba(8,18,34,.96); }
 .landmark-popup strong { display: block; font-size: .83rem; }
 .landmark-popup small { color: #aebbd0; font-size: .68rem; }
+
 
 .dialog {
   position: relative;

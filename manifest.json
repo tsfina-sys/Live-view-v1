@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "Υδρόγειος με 3D σημεία, αναζήτηση και διαθέσιμους χρήστες ανά περιοχή ή ακτίνα.",
+  "description": "LiveView με μικρά τρισδιάστατα μνημεία πάνω στην υδρόγειο, αναζήτηση και διαθέσιμους χρήστες.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d5",
+  "start_url": "./?source=pwa&version=d6",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

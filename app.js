@@ -24,7 +24,7 @@ const landmarks = [
   { id: "eiffel", name: "Πύργος του Άιφελ", country: "Γαλλία", lat: 48.8584, lng: 2.2945, minZoom: 1.0, importance: 1, icon: "🗼", kind: "tower" },
   { id: "liberty", name: "Άγαλμα της Ελευθερίας", country: "ΗΠΑ", lat: 40.6892, lng: -74.0445, minZoom: 1.0, importance: 1, icon: "🗽", kind: "modern" },
   { id: "pyramids", name: "Πυραμίδες Γκίζας", country: "Αίγυπτος", lat: 29.9792, lng: 31.1342, minZoom: 1.0, importance: 1, icon: "🔺", kind: "ancient" },
-  { id: "colosseum", name: "Κολοσσαίο", country: "Ιταλία", lat: 41.8902, lng: 12.4922, minZoom: 1.2, importance: 1, icon: "🏟️", kind: "ancient" },
+  { id: "colosseum", name: "Κολοσσαίο", country: "Ιταλία", lat: 41.8902, lng: 12.4922, minZoom: 1.2, importance: 1, icon: "🏟️", kind: "stadium" },
   { id: "bigben", name: "Big Ben", country: "Ηνωμένο Βασίλειο", lat: 51.5007, lng: -0.1246, minZoom: 1.2, importance: 1, icon: "🕰️", kind: "tower" },
   { id: "tajmahal", name: "Taj Mahal", country: "Ινδία", lat: 27.1751, lng: 78.0421, minZoom: 1.2, importance: 1, icon: "🕌", kind: "temple" },
   { id: "greatwall", name: "Σινικό Τείχος", country: "Κίνα", lat: 40.4319, lng: 116.5704, minZoom: 1.2, importance: 1, icon: "🏯", kind: "ancient" },
@@ -38,11 +38,11 @@ const landmarks = [
   { id: "knossos", name: "Ανάκτορο Κνωσού", country: "Ελλάδα", lat: 35.2989, lng: 25.1631, minZoom: 4.7, importance: 2, icon: "🏺", kind: "ancient" },
   { id: "white-tower", name: "Λευκός Πύργος", country: "Ελλάδα", lat: 40.6264, lng: 22.9484, minZoom: 5.3, importance: 2, icon: "🏰", kind: "tower" },
   { id: "delphi", name: "Δελφοί", country: "Ελλάδα", lat: 38.4824, lng: 22.5010, minZoom: 5.8, importance: 2, icon: "🏛️", kind: "temple" },
-  { id: "olympia", name: "Αρχαία Ολυμπία", country: "Ελλάδα", lat: 37.6384, lng: 21.6300, minZoom: 5.8, importance: 2, icon: "🏟️", kind: "ancient" },
+  { id: "olympia", name: "Αρχαία Ολυμπία", country: "Ελλάδα", lat: 37.6384, lng: 21.6300, minZoom: 5.8, importance: 2, icon: "🏟️", kind: "stadium" },
   { id: "sounion", name: "Ναός Ποσειδώνα", country: "Ελλάδα", lat: 37.6500, lng: 24.0240, minZoom: 6.2, importance: 2, icon: "🏛️", kind: "temple" },
   { id: "epidaurus", name: "Αρχαίο Θέατρο Επιδαύρου", country: "Ελλάδα", lat: 37.5964, lng: 23.0790, minZoom: 6.4, importance: 2, icon: "🎭", kind: "ancient" },
   { id: "mystras", name: "Μυστράς", country: "Ελλάδα", lat: 37.0729, lng: 22.3696, minZoom: 6.6, importance: 2, icon: "🏰", kind: "ancient" },
-  { id: "navagio", name: "Ναυάγιο Ζακύνθου", country: "Ελλάδα", lat: 37.8594, lng: 20.6247, minZoom: 7.0, importance: 2, icon: "🏖️", kind: "modern" },
+  { id: "navagio", name: "Ναυάγιο Ζακύνθου", country: "Ελλάδα", lat: 37.8594, lng: 20.6247, minZoom: 7.0, importance: 2, icon: "🏖️", kind: "mountain" },
   { id: "mytilene-castle", name: "Κάστρο Μυτιλήνης", country: "Ελλάδα", lat: 39.1103, lng: 26.5628, minZoom: 7.1, importance: 2, icon: "🏰", kind: "ancient" },
   { id: "chania-lighthouse", name: "Φάρος Χανίων", country: "Ελλάδα", lat: 35.5195, lng: 24.0167, minZoom: 7.4, importance: 2, icon: "🗼", kind: "tower" },
   { id: "rhodes-palace", name: "Παλάτι Ιπποτών", country: "Ελλάδα", lat: 36.4451, lng: 28.2241, minZoom: 7.4, importance: 2, icon: "🏰", kind: "ancient" },
@@ -282,6 +282,85 @@ function createUserMarkers() {
   });
 }
 
+function createLandmarkShapeMarkup(landmark) {
+  const kind = landmark.kind || "modern";
+
+  if (kind === "temple") {
+    return `
+      <span class="landmark-base"></span>
+      <span class="landmark-3d">
+        <span class="landmark-shape temple-body"></span>
+        <span class="landmark-shape temple-roof"></span>
+        <span class="landmark-shape temple-column c1"></span>
+        <span class="landmark-shape temple-column c2"></span>
+        <span class="landmark-shape temple-column c3"></span>
+        <span class="landmark-shape temple-column c4"></span>
+      </span>
+    `;
+  }
+
+  if (kind === "tower") {
+    return `
+      <span class="landmark-base"></span>
+      <span class="landmark-3d">
+        <span class="landmark-shape tower-shaft"></span>
+        <span class="landmark-shape tower-top"></span>
+        <span class="landmark-shape tower-spire"></span>
+      </span>
+    `;
+  }
+
+  if (kind === "castle") {
+    return `
+      <span class="landmark-base"></span>
+      <span class="landmark-3d">
+        <span class="landmark-shape castle-body"></span>
+        <span class="landmark-shape castle-turret t1"></span>
+        <span class="landmark-shape castle-turret t2"></span>
+        <span class="landmark-shape castle-flag"></span>
+      </span>
+    `;
+  }
+
+  if (kind === "mountain") {
+    return `
+      <span class="landmark-base"></span>
+      <span class="landmark-3d">
+        <span class="landmark-shape mountain-back"></span>
+        <span class="landmark-shape mountain-front"></span>
+      </span>
+    `;
+  }
+
+  if (kind === "ancient") {
+    return `
+      <span class="landmark-base"></span>
+      <span class="landmark-3d">
+        <span class="landmark-shape pyramid"></span>
+        <span class="landmark-shape stone"></span>
+      </span>
+    `;
+  }
+
+  if (kind === "stadium") {
+    return `
+      <span class="landmark-base"></span>
+      <span class="landmark-3d">
+        <span class="landmark-shape stadium-bowl"></span>
+        <span class="landmark-shape stadium-base"></span>
+      </span>
+    `;
+  }
+
+  return `
+    <span class="landmark-base"></span>
+    <span class="landmark-3d">
+      <span class="landmark-shape modern-body"></span>
+      <span class="landmark-shape modern-crown"></span>
+    </span>
+  `;
+}
+
 function createLandmarkMarkers() {
   landmarks.forEach(landmark => {
     const el = document.createElement("button");
@@ -289,20 +368,16 @@ function createLandmarkMarkers() {
     el.className = [
       "landmark-marker",
       landmark.kind || "modern",
-      landmark.importance > 1 ? "secondary" : ""
+      landmark.importance > 1 ? "landmark-minor" : "landmark-major"
     ].filter(Boolean).join(" ");
     el.setAttribute("aria-label", `${landmark.name}, ${landmark.country}`);
-    el.innerHTML = `
-      <span class="landmark-model">
-        <span class="landmark-icon">${landmark.icon}</span>
-      </span>
-      <span class="landmark-label">${escapeHtml(landmark.name)}</span>
-    `;
+    el.title = `${landmark.name} — ${landmark.country}`;
+    el.innerHTML = createLandmarkShapeMarkup(landmark);
 
     const popup = new maplibregl.Popup({
       className: "landmark-popup",
       closeButton: false,
-      offset: 34
+      offset: 20
     }).setHTML(`<strong>${escapeHtml(landmark.name)}</strong><small>${escapeHtml(landmark.country)}</small>`);
 
     const marker = new maplibregl.Marker({
@@ -321,7 +396,7 @@ function updateLandmarkVisibility() {
   if (!mapReady) return;
 
   const zoom = map.getZoom();
-  const scale = Math.min(1.18, Math.max(0.62, 0.64 + zoom * 0.055));
+  const scale = Math.min(1.26, Math.max(0.58, 0.62 + zoom * 0.05));
 
   landmarkEntries.forEach(entry => {
     const { landmark, element } = entry;
@@ -329,12 +404,6 @@ function updateLandmarkVisibility() {
 
     element.classList.toggle("hidden-landmark", !visible);
     element.style.setProperty("--landmark-scale", scale.toFixed(2));
-
-    const label = element.querySelector(".landmark-label");
-    if (label) {
-      const showLabel = landmark.importance === 1 || zoom >= landmark.minZoom + 0.8;
-      label.hidden = !showLabel;
-    }
   });
 }
 
