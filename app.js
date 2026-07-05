@@ -19,36 +19,6 @@ const demoUsers = [
   { id: 18, name: "Daniel", area: "Berlin", country: "Germany", lat: 52.5200, lng: 13.4050, status: "available" }
 ];
 
-const landmarks = [
-  { id: "parthenon", name: "Παρθενώνας", country: "Ελλάδα", lat: 37.9715, lng: 23.7267, minZoom: 1.0, importance: 1, icon: "🏛️", kind: "temple" },
-  { id: "eiffel", name: "Πύργος του Άιφελ", country: "Γαλλία", lat: 48.8584, lng: 2.2945, minZoom: 1.0, importance: 1, icon: "🗼", kind: "tower" },
-  { id: "liberty", name: "Άγαλμα της Ελευθερίας", country: "ΗΠΑ", lat: 40.6892, lng: -74.0445, minZoom: 1.0, importance: 1, icon: "🗽", kind: "modern" },
-  { id: "pyramids", name: "Πυραμίδες Γκίζας", country: "Αίγυπτος", lat: 29.9792, lng: 31.1342, minZoom: 1.0, importance: 1, icon: "🔺", kind: "ancient" },
-  { id: "colosseum", name: "Κολοσσαίο", country: "Ιταλία", lat: 41.8902, lng: 12.4922, minZoom: 1.2, importance: 1, icon: "🏟️", kind: "stadium" },
-  { id: "bigben", name: "Big Ben", country: "Ηνωμένο Βασίλειο", lat: 51.5007, lng: -0.1246, minZoom: 1.2, importance: 1, icon: "🕰️", kind: "tower" },
-  { id: "tajmahal", name: "Taj Mahal", country: "Ινδία", lat: 27.1751, lng: 78.0421, minZoom: 1.2, importance: 1, icon: "🕌", kind: "temple" },
-  { id: "greatwall", name: "Σινικό Τείχος", country: "Κίνα", lat: 40.4319, lng: 116.5704, minZoom: 1.2, importance: 1, icon: "🏯", kind: "ancient" },
-  { id: "sydneyopera", name: "Όπερα του Σίδνεϊ", country: "Αυστραλία", lat: -33.8568, lng: 151.2153, minZoom: 1.2, importance: 1, icon: "🎭", kind: "modern" },
-  { id: "christ", name: "Χριστός Λυτρωτής", country: "Βραζιλία", lat: -22.9519, lng: -43.2105, minZoom: 1.2, importance: 1, icon: "🗿", kind: "modern" },
-  { id: "burj", name: "Burj Khalifa", country: "ΗΑΕ", lat: 25.1972, lng: 55.2744, minZoom: 1.2, importance: 1, icon: "🏙️", kind: "tower" },
-  { id: "fuji", name: "Όρος Fuji", country: "Ιαπωνία", lat: 35.3606, lng: 138.7274, minZoom: 1.4, importance: 1, icon: "🗻", kind: "mountain" },
-  { id: "machupicchu", name: "Machu Picchu", country: "Περού", lat: -13.1631, lng: -72.5450, minZoom: 1.4, importance: 1, icon: "⛰️", kind: "ancient" },
-
-  { id: "meteora", name: "Μετέωρα", country: "Ελλάδα", lat: 39.7217, lng: 21.6306, minZoom: 4.0, importance: 2, icon: "⛰️", kind: "mountain" },
-  { id: "knossos", name: "Ανάκτορο Κνωσού", country: "Ελλάδα", lat: 35.2989, lng: 25.1631, minZoom: 4.7, importance: 2, icon: "🏺", kind: "ancient" },
-  { id: "white-tower", name: "Λευκός Πύργος", country: "Ελλάδα", lat: 40.6264, lng: 22.9484, minZoom: 5.3, importance: 2, icon: "🏰", kind: "tower" },
-  { id: "delphi", name: "Δελφοί", country: "Ελλάδα", lat: 38.4824, lng: 22.5010, minZoom: 5.8, importance: 2, icon: "🏛️", kind: "temple" },
-  { id: "olympia", name: "Αρχαία Ολυμπία", country: "Ελλάδα", lat: 37.6384, lng: 21.6300, minZoom: 5.8, importance: 2, icon: "🏟️", kind: "stadium" },
-  { id: "sounion", name: "Ναός Ποσειδώνα", country: "Ελλάδα", lat: 37.6500, lng: 24.0240, minZoom: 6.2, importance: 2, icon: "🏛️", kind: "temple" },
-  { id: "epidaurus", name: "Αρχαίο Θέατρο Επιδαύρου", country: "Ελλάδα", lat: 37.5964, lng: 23.0790, minZoom: 6.4, importance: 2, icon: "🎭", kind: "ancient" },
-  { id: "mystras", name: "Μυστράς", country: "Ελλάδα", lat: 37.0729, lng: 22.3696, minZoom: 6.6, importance: 2, icon: "🏰", kind: "ancient" },
-  { id: "navagio", name: "Ναυάγιο Ζακύνθου", country: "Ελλάδα", lat: 37.8594, lng: 20.6247, minZoom: 7.0, importance: 2, icon: "🏖️", kind: "mountain" },
-  { id: "mytilene-castle", name: "Κάστρο Μυτιλήνης", country: "Ελλάδα", lat: 39.1103, lng: 26.5628, minZoom: 7.1, importance: 2, icon: "🏰", kind: "ancient" },
-  { id: "chania-lighthouse", name: "Φάρος Χανίων", country: "Ελλάδα", lat: 35.5195, lng: 24.0167, minZoom: 7.4, importance: 2, icon: "🗼", kind: "tower" },
-  { id: "rhodes-palace", name: "Παλάτι Ιπποτών", country: "Ελλάδα", lat: 36.4451, lng: 28.2241, minZoom: 7.4, importance: 2, icon: "🏰", kind: "ancient" },
-  { id: "corfu-fortress", name: "Παλαιό Φρούριο Κέρκυρας", country: "Ελλάδα", lat: 39.6244, lng: 19.9296, minZoom: 7.6, importance: 2, icon: "🏰", kind: "ancient" },
-  { id: "acropolis-lindos", name: "Ακρόπολη Λίνδου", country: "Ελλάδα", lat: 36.0917, lng: 28.0882, minZoom: 8.0, importance: 2, icon: "🏛️", kind: "temple" }
-];
 
 let selectedUser = null;
 let currentStream = null;
@@ -69,7 +39,6 @@ let visibleUsers = [];
 let mapReady = false;
 
 const userMarkerEntries = new Map();
-const landmarkEntries = [];
 
 const map = new maplibregl.Map({
   container: "map",
@@ -79,10 +48,15 @@ const map = new maplibregl.Map({
   minZoom: 0.5,
   maxZoom: 18,
   maxPitch: 78,
-  attributionControl: true,
+  attributionControl: false,
   renderWorldCopies: false,
   canvasContextAttributes: { antialias: true }
 });
+
+map.addControl(
+  new maplibregl.AttributionControl({ compact: true }),
+  "bottom-right"
+);
 
 const startScreen = document.getElementById("startScreen");
 const enterAppBtn = document.getElementById("enterAppBtn");
@@ -199,13 +173,9 @@ map.on("style.load", () => {
 map.on("load", () => {
   mapReady = true;
   createUserMarkers();
-  createLandmarkMarkers();
   activateMode("global", { moveMap: false });
-  updateLandmarkVisibility();
 });
 
-map.on("zoom", updateLandmarkVisibility);
-map.on("moveend", updateLandmarkVisibility);
 
 function addOptional3DBuildings() {
   try {
@@ -279,131 +249,6 @@ function createUserMarkers() {
       .addTo(map);
 
     userMarkerEntries.set(user.id, { user, marker, element: el });
-  });
-}
-
-function createLandmarkShapeMarkup(landmark) {
-  const kind = landmark.kind || "modern";
-
-  if (kind === "temple") {
-    return `
-      <span class="landmark-base"></span>
-      <span class="landmark-3d">
-        <span class="landmark-shape temple-body"></span>
-        <span class="landmark-shape temple-roof"></span>
-        <span class="landmark-shape temple-column c1"></span>
-        <span class="landmark-shape temple-column c2"></span>
-        <span class="landmark-shape temple-column c3"></span>
-        <span class="landmark-shape temple-column c4"></span>
-      </span>
-    `;
-  }
-
-  if (kind === "tower") {
-    return `
-      <span class="landmark-base"></span>
-      <span class="landmark-3d">
-        <span class="landmark-shape tower-shaft"></span>
-        <span class="landmark-shape tower-top"></span>
-        <span class="landmark-shape tower-spire"></span>
-      </span>
-    `;
-  }
-
-  if (kind === "castle") {
-    return `
-      <span class="landmark-base"></span>
-      <span class="landmark-3d">
-        <span class="landmark-shape castle-body"></span>
-        <span class="landmark-shape castle-turret t1"></span>
-        <span class="landmark-shape castle-turret t2"></span>
-        <span class="landmark-shape castle-flag"></span>
-      </span>
-    `;
-  }
-
-  if (kind === "mountain") {
-    return `
-      <span class="landmark-base"></span>
-      <span class="landmark-3d">
-        <span class="landmark-shape mountain-back"></span>
-        <span class="landmark-shape mountain-front"></span>
-      </span>
-    `;
-  }
-
-  if (kind === "ancient") {
-    return `
-      <span class="landmark-base"></span>
-      <span class="landmark-3d">
-        <span class="landmark-shape pyramid"></span>
-        <span class="landmark-shape stone"></span>
-      </span>
-    `;
-  }
-
-  if (kind === "stadium") {
-    return `
-      <span class="landmark-base"></span>
-      <span class="landmark-3d">
-        <span class="landmark-shape stadium-bowl"></span>
-        <span class="landmark-shape stadium-base"></span>
-      </span>
-    `;
-  }
-
-  return `
-    <span class="landmark-base"></span>
-    <span class="landmark-3d">
-      <span class="landmark-shape modern-body"></span>
-      <span class="landmark-shape modern-crown"></span>
-    </span>
-  `;
-}
-
-function createLandmarkMarkers() {
-  landmarks.forEach(landmark => {
-    const el = document.createElement("button");
-    el.type = "button";
-    el.className = [
-      "landmark-marker",
-      landmark.kind || "modern",
-      landmark.importance > 1 ? "landmark-minor" : "landmark-major"
-    ].filter(Boolean).join(" ");
-    el.setAttribute("aria-label", `${landmark.name}, ${landmark.country}`);
-    el.title = `${landmark.name} — ${landmark.country}`;
-    el.innerHTML = createLandmarkShapeMarkup(landmark);
-
-    const popup = new maplibregl.Popup({
-      className: "landmark-popup",
-      closeButton: false,
-      offset: 20
-    }).setHTML(`<strong>${escapeHtml(landmark.name)}</strong><small>${escapeHtml(landmark.country)}</small>`);
-
-    const marker = new maplibregl.Marker({
-      element: el,
-      anchor: "bottom"
-    })
-      .setLngLat([landmark.lng, landmark.lat])
-      .setPopup(popup)
-      .addTo(map);
-
-    landmarkEntries.push({ landmark, marker, element: el });
-  });
-}
-
-function updateLandmarkVisibility() {
-  if (!mapReady) return;
-
-  const zoom = map.getZoom();
-  const scale = Math.min(1.26, Math.max(0.58, 0.62 + zoom * 0.05));
-
-  landmarkEntries.forEach(entry => {
-    const { landmark, element } = entry;
-    const visible = zoom >= landmark.minZoom;
-
-    element.classList.toggle("hidden-landmark", !visible);
-    element.style.setProperty("--landmark-scale", scale.toFixed(2));
   });
 }
 

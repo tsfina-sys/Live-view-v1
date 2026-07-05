@@ -303,24 +303,25 @@ button { cursor: pointer; }
 
 .mode-panel {
   position: absolute;
-  z-index: 8;
-  left: 13px;
-  top: 40%;
-  min-width: 174px;
-  max-width: min(260px, calc(100% - 88px));
-  padding: 10px 11px;
+  z-index: 12;
+  left: 12px;
+  bottom: calc(146px + env(safe-area-inset-bottom));
+  top: auto;
+  min-width: 138px;
+  max-width: min(190px, calc(100% - 92px));
+  padding: 8px 9px;
   border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--glass);
-  box-shadow: 0 8px 24px rgba(0,0,0,.27);
+  border-radius: 14px;
+  background: rgba(8, 18, 34, .88);
+  box-shadow: 0 7px 20px rgba(0,0,0,.27);
   backdrop-filter: blur(14px);
 }
 
 .mode-line {
   display: grid;
-  grid-template-columns: 9px minmax(0, 1fr) auto;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .online-dot {
@@ -333,27 +334,27 @@ button { cursor: pointer; }
 
 .mode-line strong {
   display: block;
-  font-size: .75rem;
+  font-size: .69rem;
 }
 .mode-line small {
   display: block;
-  margin-top: 2px;
+  margin-top: 1px;
   overflow: hidden;
   color: var(--muted);
-  font-size: .62rem;
+  font-size: .55rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .mode-count {
-  min-width: 28px;
-  height: 28px;
+  min-width: 25px;
+  height: 25px;
   display: grid;
   place-items: center;
   border-radius: 999px;
   background: rgba(46,230,161,.14);
   color: #86f2ca;
-  font-size: .72rem;
+  font-size: .66rem;
   font-weight: 900;
 }
 
@@ -362,23 +363,23 @@ button { cursor: pointer; }
   align-items: center;
   justify-content: space-between;
   gap: 9px;
-  margin-top: 9px;
-  padding-top: 8px;
+  margin-top: 7px;
+  padding-top: 6px;
   border-top: 1px solid rgba(255,255,255,.09);
 }
 
 .radius-control span {
   color: #c8d3e4;
-  font-size: .66rem;
+  font-size: .58rem;
   font-weight: 800;
 }
 
 .radius-control select {
   width: auto;
-  min-width: 78px;
+  min-width: 70px;
   border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 6px 8px;
+  border-radius: 8px;
+  padding: 5px 6px;
   background: #122138;
   color: white;
   font-size: .68rem;
@@ -528,224 +529,6 @@ button { cursor: pointer; }
   0%,100% { box-shadow: 0 0 0 0 rgba(39,136,255,.5), 0 5px 18px rgba(0,0,0,.45); }
   50% { box-shadow: 0 0 0 13px rgba(39,136,255,0), 0 5px 18px rgba(0,0,0,.45); }
 }
-
-/* True 3D landmark miniatures */
-.landmark-marker {
-  --landmark-scale: 1;
-  position: relative;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  transform: translate(-50%, -100%) scale(var(--landmark-scale));
-  transform-origin: 50% 100%;
-  pointer-events: auto;
-  transition: opacity .22s ease, transform .22s ease;
-  filter: drop-shadow(0 10px 12px rgba(0,0,0,.38));
-}
-.landmark-marker.hidden-landmark {
-  opacity: 0;
-  pointer-events: none;
-}
-.landmark-base {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 28px;
-  height: 7px;
-  transform: translateX(-50%) perspective(80px) rotateX(72deg);
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(18,32,50,.88), rgba(4,10,18,.28));
-  box-shadow: 0 2px 6px rgba(0,0,0,.25);
-}
-.landmark-3d {
-  position: absolute;
-  left: 50%;
-  bottom: 6px;
-  width: 30px;
-  height: 30px;
-  transform: translateX(-50%);
-  transform-style: preserve-3d;
-}
-.landmark-shape {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform-style: preserve-3d;
-}
-.landmark-marker.landmark-major { z-index: 3; }
-.landmark-marker.landmark-minor { z-index: 2; }
-
-/* Temple */
-.landmark-marker.temple .temple-body {
-  width: 24px;
-  height: 14px;
-  margin-left: -12px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #f6edd7, #ccb889 70%, #8e774d);
-  box-shadow: inset -3px -3px 6px rgba(88,68,34,.22), inset 2px 2px 4px rgba(255,255,255,.58);
-}
-.landmark-marker.temple .temple-roof {
-  width: 28px;
-  height: 8px;
-  margin-left: -14px;
-  bottom: 12px;
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, #fff4d1, #b79758);
-  transform: perspective(90px) rotateX(18deg) translateZ(8px);
-}
-.landmark-marker.temple .temple-column {
-  width: 3px;
-  height: 10px;
-  bottom: 2px;
-  border-radius: 1px;
-  background: linear-gradient(180deg, #fff6dd, #bda16e);
-  box-shadow: inset -1px 0 2px rgba(79,58,22,.25);
-}
-.landmark-marker.temple .c1 { margin-left: -8px; }
-.landmark-marker.temple .c2 { margin-left: -3px; }
-.landmark-marker.temple .c3 { margin-left: 2px; }
-.landmark-marker.temple .c4 { margin-left: 7px; }
-
-/* Tower */
-.landmark-marker.tower .tower-shaft {
-  width: 10px;
-  height: 19px;
-  margin-left: -5px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #eef6ff, #9ab8d5 62%, #577290);
-  box-shadow: inset -2px -2px 4px rgba(37,59,80,.25), inset 2px 2px 3px rgba(255,255,255,.58);
-}
-.landmark-marker.tower .tower-top {
-  width: 18px;
-  height: 6px;
-  margin-left: -9px;
-  bottom: 16px;
-  border-radius: 4px 4px 2px 2px;
-  background: linear-gradient(180deg, #f2f8ff, #83a6ca);
-  transform: perspective(90px) rotateX(12deg) translateZ(7px);
-}
-.landmark-marker.tower .tower-spire {
-  width: 2px;
-  height: 8px;
-  margin-left: -1px;
-  bottom: 22px;
-  border-radius: 1px;
-  background: linear-gradient(180deg, #f6fbff, #84a8cf);
-}
-
-/* Castle */
-.landmark-marker.castle .castle-body {
-  width: 22px;
-  height: 14px;
-  margin-left: -11px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #f0f3f7, #abb6c3 68%, #657485);
-  box-shadow: inset -2px -2px 4px rgba(43,58,75,.20), inset 2px 2px 4px rgba(255,255,255,.48);
-}
-.landmark-marker.castle .castle-turret {
-  width: 6px;
-  height: 16px;
-  bottom: 6px;
-  border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, #f4f7fb, #99a7b6 68%, #5b6979);
-}
-.landmark-marker.castle .t1 { margin-left: -11px; }
-.landmark-marker.castle .t2 { margin-left: 5px; }
-.landmark-marker.castle .castle-flag {
-  width: 6px;
-  height: 4px;
-  margin-left: 9px;
-  bottom: 19px;
-  clip-path: polygon(0 0, 100% 30%, 0 100%);
-  background: linear-gradient(180deg, #ff7a7a, #b02323);
-}
-
-/* Mountain */
-.landmark-marker.mountain .mountain-back {
-  width: 26px;
-  height: 18px;
-  margin-left: -13px;
-  clip-path: polygon(0 100%, 46% 8%, 100% 100%);
-  background: linear-gradient(180deg, #d9ecef, #73928d 70%, #405752);
-}
-.landmark-marker.mountain .mountain-front {
-  width: 18px;
-  height: 15px;
-  margin-left: -9px;
-  clip-path: polygon(0 100%, 40% 12%, 100% 100%);
-  background: linear-gradient(180deg, #f7fbfb, #a2c5be 70%, #4f6a63);
-  bottom: 1px;
-}
-
-/* Ancient / pyramid */
-.landmark-marker.ancient .pyramid {
-  width: 24px;
-  height: 18px;
-  margin-left: -12px;
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, #f8e1aa, #d1ab5c 65%, #86652d);
-  transform: perspective(90px) rotateX(10deg);
-}
-.landmark-marker.ancient .stone {
-  width: 16px;
-  height: 4px;
-  margin-left: -8px;
-  bottom: -1px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #d9bc7b, #8c6a33);
-}
-
-/* Modern monument */
-.landmark-marker.modern .modern-body {
-  width: 12px;
-  height: 18px;
-  margin-left: -6px;
-  border-radius: 8px 8px 4px 4px;
-  background: linear-gradient(180deg, #dff6ff, #89bccf 70%, #3e6878);
-  box-shadow: inset -2px -2px 4px rgba(38,63,73,.24), inset 2px 2px 4px rgba(255,255,255,.52);
-}
-.landmark-marker.modern .modern-crown {
-  width: 18px;
-  height: 8px;
-  margin-left: -9px;
-  bottom: 16px;
-  border-radius: 50% 50% 18% 18%;
-  background: linear-gradient(180deg, #f3fbff, #7fb2c6);
-}
-
-/* Stadium */
-.landmark-marker.stadium .stadium-bowl {
-  width: 26px;
-  height: 12px;
-  margin-left: -13px;
-  border-radius: 50% / 62%;
-  background: radial-gradient(circle at 50% 42%, #69bf66 0 34%, #dfe8f1 35% 55%, #90a4bb 56% 100%);
-  border: 2px solid #5e738e;
-  transform: perspective(90px) rotateX(64deg);
-}
-.landmark-marker.stadium .stadium-base {
-  width: 30px;
-  height: 5px;
-  margin-left: -15px;
-  bottom: -1px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #72859d, #44566f);
-}
-
-.landmark-popup .maplibregl-popup-content {
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: 13px;
-  padding: 11px 13px;
-  background: rgba(8,18,34,.96);
-  color: white;
-  box-shadow: var(--shadow);
-}
-.landmark-popup .maplibregl-popup-tip { border-top-color: rgba(8,18,34,.96); }
-.landmark-popup strong { display: block; font-size: .83rem; }
-.landmark-popup small { color: #aebbd0; font-size: .68rem; }
-
 
 .dialog {
   position: relative;
@@ -1028,22 +811,40 @@ textarea:focus, select:focus { border-color: var(--accent-2); }
   .search-bar input { font-size: .84rem; }
 
   .map-tools { top: 39%; }
-  .mode-panel { top: 40%; }
 
   .location-card { bottom: calc(43px + env(safe-area-inset-bottom)); }
-
-  .landmark-label { font-size: .51rem; }
 }
 
 @media (max-height: 720px) {
   .map-tools { top: 42%; gap: 6px; }
   .tool-btn { width: 42px; height: 42px; }
-  .mode-panel { top: 43%; }
   .location-card { min-height: 70px; padding-block: 9px; }
 }
 
 @media (min-width: 900px) {
   .app-header { padding-inline: 24px; }
   .map-tools { right: 24px; }
-  .mode-panel { left: 24px; }
+  .mode-panel { left: 24px; bottom: calc(150px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 520px) {
+  .mode-panel {
+    left: 10px;
+    bottom: calc(141px + env(safe-area-inset-bottom));
+    min-width: 130px;
+    max-width: 174px;
+  }
+}
+
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  margin-right: 8px;
+  margin-bottom: calc(137px + env(safe-area-inset-bottom));
+  border-radius: 50%;
+  background: rgba(245, 248, 252, .88);
+  box-shadow: 0 5px 15px rgba(0,0,0,.25);
+}
+
+.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  border-radius: 10px;
+  max-width: min(82vw, 330px);
 }
