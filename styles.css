@@ -304,8 +304,9 @@ button { cursor: pointer; }
 .mode-panel {
   position: absolute;
   z-index: 12;
-  left: 12px;
-  bottom: calc(146px + env(safe-area-inset-bottom));
+  right: 12px;
+  left: auto;
+  bottom: calc(48px + env(safe-area-inset-bottom));
   top: auto;
   min-width: 138px;
   max-width: min(190px, calc(100% - 92px));
@@ -386,83 +387,10 @@ button { cursor: pointer; }
   font-weight: 800;
 }
 
-.location-card {
-  position: absolute;
-  z-index: 11;
-  left: 50%;
-  bottom: calc(48px + env(safe-area-inset-bottom));
-  width: min(520px, calc(100% - 28px));
-  min-height: 80px;
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 42px;
-  align-items: center;
-  gap: 11px;
-  transform: translateX(-50%);
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: var(--glass-strong);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
-}
-
-.location-symbol {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(128,173,255,.15);
-  color: #bad0ff;
-  font-size: 1.28rem;
-  font-weight: 900;
-}
-
-.location-card.ready .location-symbol {
-  background: rgba(46,230,161,.15);
-  color: var(--accent);
-}
-
-.location-copy { min-width: 0; }
-.eyebrow {
-  display: block;
-  margin-bottom: 3px;
-  color: #8292aa;
-  font-size: .61rem;
-  font-weight: 900;
-  letter-spacing: .13em;
-}
-.location-copy strong {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: .9rem;
-}
-.location-copy small {
-  display: block;
-  margin-top: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--muted);
-  font-size: .69rem;
-}
-
-.focus-btn {
-  width: 42px;
-  height: 42px;
-  border: 1px solid rgba(128,173,255,.25);
-  border-radius: 50%;
-  background: rgba(128,173,255,.13);
-  color: #c9daff;
-  font-size: 1.1rem;
-}
-
 .privacy-note {
   position: absolute;
   z-index: 8;
-  bottom: calc(14px + env(safe-area-inset-bottom));
+  bottom: calc(8px + env(safe-area-inset-bottom));
   left: 50%;
   width: max-content;
   max-width: calc(100% - 24px);
@@ -811,26 +739,28 @@ textarea:focus, select:focus { border-color: var(--accent-2); }
   .search-bar input { font-size: .84rem; }
 
   .map-tools { top: 39%; }
-
-  .location-card { bottom: calc(43px + env(safe-area-inset-bottom)); }
 }
 
 @media (max-height: 720px) {
   .map-tools { top: 42%; gap: 6px; }
   .tool-btn { width: 42px; height: 42px; }
-  .location-card { min-height: 70px; padding-block: 9px; }
 }
 
 @media (min-width: 900px) {
   .app-header { padding-inline: 24px; }
   .map-tools { right: 24px; }
-  .mode-panel { left: 24px; bottom: calc(150px + env(safe-area-inset-bottom)); }
+  .mode-panel {
+    right: 24px;
+    left: auto;
+    bottom: calc(52px + env(safe-area-inset-bottom));
+  }
 }
 
 @media (max-width: 520px) {
   .mode-panel {
-    left: 10px;
-    bottom: calc(141px + env(safe-area-inset-bottom));
+    right: 10px;
+    left: auto;
+    bottom: calc(42px + env(safe-area-inset-bottom));
     min-width: 130px;
     max-width: 174px;
   }
@@ -838,7 +768,7 @@ textarea:focus, select:focus { border-color: var(--accent-2); }
 
 .maplibregl-ctrl-attrib.maplibregl-compact {
   margin-right: 8px;
-  margin-bottom: calc(137px + env(safe-area-inset-bottom));
+  margin-bottom: calc(10px + env(safe-area-inset-bottom));
   border-radius: 50%;
   background: rgba(245, 248, 252, .88);
   box-shadow: 0 5px 15px rgba(0,0,0,.25);

@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "Καθαρή υδρόγειος LiveView χωρίς αξιοθέατα, με διαθέσιμους χρήστες ανά υδρόγειο, περιοχή ή ακτίνα.",
+  "description": "Καθαρή υδρόγειος χωρίς πλαίσιο θέσης, με μικρό πεδίο διαθέσιμων χρηστών χαμηλά δεξιά.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d7",
+  "start_url": "./?source=pwa&version=d9",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

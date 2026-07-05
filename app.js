@@ -72,7 +72,6 @@ const searchResults = document.getElementById("searchResults");
 const globeBtn = document.getElementById("globeBtn");
 const areaBtn = document.getElementById("areaBtn");
 const locateBtn = document.getElementById("locateBtn");
-const focusLocationBtn = document.getElementById("focusLocationBtn");
 const cameraBtn = document.getElementById("cameraBtn");
 const peopleBtn = document.getElementById("peopleBtn");
 const modeTitle = document.getElementById("modeTitle");
@@ -80,10 +79,6 @@ const modeDetails = document.getElementById("modeDetails");
 const onlineCount = document.getElementById("onlineCount");
 const radiusControl = document.getElementById("radiusControl");
 const radiusSelect = document.getElementById("radiusSelect");
-const locationCard = document.getElementById("locationCard");
-const locationTitle = document.getElementById("locationTitle");
-const locationDetails = document.getElementById("locationDetails");
-const locationSymbol = document.getElementById("locationSymbol");
 const peopleDialog = document.getElementById("peopleDialog");
 const peopleDialogTitle = document.getElementById("peopleDialogTitle");
 const peopleDialogSubtitle = document.getElementById("peopleDialogSubtitle");
@@ -264,10 +259,8 @@ function openRequest(user) {
 }
 
 function updateLocationCard({ title, details, ready = false, error = false }) {
-  locationTitle.textContent = title;
-  locationDetails.textContent = details;
-  locationCard.classList.toggle("ready", ready);
-  locationSymbol.textContent = error ? "!" : ready ? "●" : "◎";
+  // Η κατάσταση GPS διατηρείται εσωτερικά χωρίς να εμφανίζεται πλαίσιο στον χάρτη.
+  window.liveViewLocationStatus = { title, details, ready, error };
 }
 
 function createExactLocationMarker(longitude, latitude) {
@@ -589,7 +582,6 @@ async function activateMode(mode, { moveMap = true } = {}) {
 globeBtn.addEventListener("click", () => activateMode("global"));
 areaBtn.addEventListener("click", () => activateMode("area"));
 locateBtn.addEventListener("click", () => activateMode("nearby"));
-focusLocationBtn.addEventListener("click", focusOnMyLocation);
 
 radiusSelect.addEventListener("change", () => {
   nearbyRadiusKm = Number(radiusSelect.value);
