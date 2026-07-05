@@ -3,10 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1220" />
+  <meta name="theme-color" content="#07101f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LiveView" />
   <meta name="description" content="LiveView MVP — ζωντανή εικόνα κατόπιν αιτήματος από χρήστες σε χάρτη." />
-  <title>LiveView MVP D1</title>
+  <title>LiveView D2 PWA</title>
   <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -16,10 +21,15 @@
       <h1>LiveView</h1>
       <p>Ζωντανή εικόνα, μόνο με αποδοχή</p>
     </div>
-    <button id="availabilityBtn" class="status-btn" type="button" aria-pressed="false">
-      <span class="status-dot"></span>
-      Μη διαθέσιμος
-    </button>
+    <div class="top-actions">
+      <button id="installBtn" class="install-btn" type="button" hidden>
+        ⬇ Εγκατάσταση
+      </button>
+      <button id="availabilityBtn" class="status-btn" type="button" aria-pressed="false">
+        <span class="status-dot"></span>
+        Μη διαθέσιμος
+      </button>
+    </div>
   </header>
 
   <main>

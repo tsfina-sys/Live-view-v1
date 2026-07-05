@@ -22,6 +22,7 @@ const map = new maplibregl.Map({
 map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "bottom-right");
 
 const availabilityBtn = document.getElementById("availabilityBtn");
+const installBtn = document.getElementById("installBtn");
 const locateBtn = document.getElementById("locateBtn");
 const cameraBtn = document.getElementById("cameraBtn");
 const requestDialog = document.getElementById("requestDialog");
@@ -45,6 +46,62 @@ function showToast(message) {
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 3000);
 }
+
+
+let deferredInstallPrompt = null;
+
+function isRunningAsInstalledApp() {
+  return window.matchMedia("(display-mode: standalone)").matches ||
+         window.matchMedia("(display-mode: fullscreen)").matches ||
+         window.navigator.standalone === true;
+}
+
+function isIosDevice() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  if (!isRunningAsInstalledApp()) {
+    installBtn.hidden = false;
+  }
+});
+
+installBtn.addEventListener("click", async () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installBtn.hidden = true;
+
+    if (choice.outcome === "accepted") {
+      showToast("Η εγκατάσταση του LiveView ξεκίνησε.");
+    } else {
+      showToast("Η εγκατάσταση ακυρώθηκε.");
+    }
+    return;
+  }
+
+  if (isIosDevice()) {
+    showToast("Στο Safari: Κοινοποίηση → Προσθήκη στην οθόνη Αφετηρίας.");
+  } else {
+    showToast("Chrome ⋮ → Εγκατάσταση εφαρμογής. Αν υπάρχει παλιά συντόμευση, διέγραψέ την πρώτα.");
+  }
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  installBtn.hidden = true;
+  showToast("Το LiveView εγκαταστάθηκε ως εφαρμογή.");
+});
+
+if (isRunningAsInstalledApp()) {
+  installBtn.hidden = true;
+} else if (isIosDevice()) {
+  installBtn.hidden = false;
+}
+
 
 function createMarker(user) {
   const el = document.createElement("button");

@@ -355,3 +355,42 @@ textarea:focus, select:focus { border-color: var(--accent-2); }
   .privacy-pill { font-size: .67rem; }
   .map-shell { height: 59vh; }
 }
+
+
+[hidden] { display: none !important; }
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.install-btn {
+  border: 1px solid rgba(120, 169, 255, .42);
+  border-radius: 999px;
+  padding: 10px 12px;
+  background: rgba(120, 169, 255, .16);
+  color: #d4e3ff;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@media (display-mode: fullscreen), (display-mode: standalone) {
+  .install-btn { display: none !important; }
+}
+
+@media (max-width: 520px) {
+  .install-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .install-btn::before {
+    content: "⬇";
+    font-size: 1rem;
+  }
+}
