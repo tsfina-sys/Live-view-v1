@@ -3,66 +3,96 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#07101f" />
+  <meta name="theme-color" content="#06101f" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiveView" />
-  <meta name="description" content="LiveView MVP — ζωντανή εικόνα κατόπιν αιτήματος από χρήστες σε χάρτη." />
-  <title>LiveView D2 PWA</title>
+  <meta name="description" content="LiveView — αναζήτηση τοποθεσίας και ζωντανή εικόνα κατόπιν αποδοχής." />
+  <title>LiveView D3</title>
+
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <h1>LiveView</h1>
-      <p>Ζωντανή εικόνα, μόνο με αποδοχή</p>
-    </div>
-    <div class="top-actions">
-      <button id="installBtn" class="install-btn" type="button" hidden>
-        ⬇ Εγκατάσταση
-      </button>
-      <button id="availabilityBtn" class="status-btn" type="button" aria-pressed="false">
-        <span class="status-dot"></span>
-        Μη διαθέσιμος
-      </button>
-    </div>
-  </header>
+  <main class="globe-screen">
+    <div id="map" aria-label="Υδρόγειος LiveView"></div>
+    <div class="space-shade" aria-hidden="true"></div>
 
-  <main>
-    <section class="map-shell" aria-label="Χάρτης διαθέσιμων χρηστών">
-      <div id="map"></div>
-
-      <div class="privacy-pill">
-        <span>🛡️</span>
-        Η δημόσια θέση εμφανίζεται προσεγγιστικά
-      </div>
-
-      <div class="map-actions">
-        <button id="locateBtn" class="round-btn" type="button" title="Η θέση μου">◎</button>
-        <button id="cameraBtn" class="round-btn" type="button" title="Δοκιμή κάμερας">📷</button>
-      </div>
-
-      <aside class="legend">
-        <div><span class="legend-dot available"></span> Διαθέσιμος</div>
-        <div><span class="legend-dot busy"></span> Σε μετάδοση</div>
-      </aside>
-    </section>
-
-    <section class="bottom-panel">
-      <div class="panel-heading">
+    <header class="app-header">
+      <div class="brand">
+        <img src="./icon-192.png" alt="" />
         <div>
-          <h2>Κοντινοί διαθέσιμοι χρήστες</h2>
-          <p>Επίλεξε σημείο στον χάρτη ή χρήστη από τη λίστα.</p>
+          <h1>LiveView</h1>
+          <p>Δες τον κόσμο ζωντανά</p>
         </div>
-        <span id="onlineCount" class="count-badge">0 online</span>
       </div>
-      <div id="userList" class="user-list"></div>
+
+      <div class="header-actions">
+        <button id="installBtn" class="icon-text-btn" type="button" hidden>
+          ⬇ <span>Εγκατάσταση</span>
+        </button>
+        <button id="availabilityBtn" class="status-btn" type="button" aria-pressed="false">
+          <span class="status-dot"></span>
+          <span class="status-label">Μη διαθέσιμος</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="search-wrap" aria-label="Αναζήτηση τοποθεσίας">
+      <form id="searchForm" class="search-bar" autocomplete="off">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          id="placeSearch"
+          type="search"
+          inputmode="search"
+          enterkeyhint="search"
+          placeholder="Αναζήτηση πόλης, περιοχής ή σημείου"
+          aria-label="Αναζήτηση πόλης, περιοχής ή σημείου"
+        />
+        <button id="clearSearchBtn" class="clear-search" type="button" aria-label="Καθαρισμός" hidden>×</button>
+        <button class="search-submit" type="submit">Αναζήτηση</button>
+      </form>
+      <div id="searchResults" class="search-results" role="listbox" hidden></div>
     </section>
+
+    <div class="map-tools" aria-label="Εργαλεία χάρτη">
+      <button id="globeBtn" class="round-btn" type="button" title="Προβολή υδρογείου" aria-label="Προβολή υδρογείου">🌐</button>
+      <button id="locateBtn" class="round-btn" type="button" title="Η θέση μου" aria-label="Η θέση μου">◎</button>
+      <button id="cameraBtn" class="round-btn" type="button" title="Δοκιμή κάμερας" aria-label="Δοκιμή κάμερας">📷</button>
+      <button id="peopleBtn" class="round-btn" type="button" title="Διαθέσιμοι χρήστες" aria-label="Διαθέσιμοι χρήστες">👥</button>
+    </div>
+
+    <div class="online-pill">
+      <span class="online-dot"></span>
+      <span id="onlineCount">0 διαθέσιμοι</span>
+    </div>
+
+    <section id="locationCard" class="location-card" aria-live="polite">
+      <div class="location-symbol" id="locationSymbol">◎</div>
+      <div class="location-copy">
+        <span class="eyebrow">Η ΘΕΣΗ ΜΟΥ</span>
+        <strong id="locationTitle">Εντοπισμός θέσης…</strong>
+        <small id="locationDetails">Δώσε άδεια τοποθεσίας όταν ζητηθεί.</small>
+      </div>
+      <button id="focusLocationBtn" class="focus-btn" type="button" aria-label="Εστίαση στη θέση μου">➜</button>
+    </section>
+
+    <div class="privacy-note">🛡️ Η ακριβής θέση σου παραμένει ιδιωτική μέχρι να επιλέξεις «Διαθέσιμος».</div>
   </main>
+
+  <dialog id="peopleDialog" class="dialog people-dialog">
+    <div class="dialog-heading">
+      <div>
+        <h2>Διαθέσιμοι χρήστες</h2>
+        <p>Δοκιμαστικά σημεία στην περιοχή της Αθήνας.</p>
+      </div>
+      <button id="closePeopleBtn" class="dialog-close static-close" type="button" aria-label="Κλείσιμο">×</button>
+    </div>
+    <div id="userList" class="user-list"></div>
+  </dialog>
 
   <dialog id="requestDialog" class="dialog">
     <form method="dialog">
@@ -95,12 +125,12 @@
   </dialog>
 
   <dialog id="cameraDialog" class="dialog camera-dialog">
-    <div class="camera-head">
+    <div class="dialog-heading">
       <div>
-        <h2>Δοκιμή πίσω κάμερας</h2>
+        <h2>Δοκιμή κάμερας</h2>
         <p>Η εικόνα παραμένει μόνο στη συσκευή σου σε αυτή την έκδοση.</p>
       </div>
-      <button id="closeCameraBtn" class="dialog-close" type="button" aria-label="Κλείσιμο">×</button>
+      <button id="closeCameraBtn" class="dialog-close static-close" type="button" aria-label="Κλείσιμο">×</button>
     </div>
     <video id="cameraPreview" autoplay muted playsinline></video>
     <div id="cameraError" class="camera-error" hidden></div>
@@ -112,7 +142,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

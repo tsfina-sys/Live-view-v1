@@ -2,18 +2,18 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "Ζωντανή εικόνα από χρήστες κατόπιν αιτήματος και αποδοχής.",
+  "description": "Υδρόγειος, αναζήτηση τοποθεσίας και ζωντανή εικόνα κατόπιν αποδοχής.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa",
+  "start_url": "./?source=pwa&version=d3",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [
     "fullscreen",
     "standalone"
   ],
-  "background_color": "#07101f",
-  "theme_color": "#07101f",
+  "background_color": "#06101f",
+  "theme_color": "#06101f",
   "orientation": "any",
   "prefer_related_applications": false,
   "icons": [
