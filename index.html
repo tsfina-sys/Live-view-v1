@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LiveView" />
   <meta name="description" content="LiveView — λογαριασμοί χρηστών, διαθεσιμότητα και ζωντανή εικόνα." />
-  <title>LiveView D11</title>
+  <title>LiveView D12</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -87,6 +87,17 @@
       </form>
 
       <div id="authMessage" class="auth-message" aria-live="polite"></div>
+
+      <div id="guestEntryWrap" class="guest-entry-wrap" hidden>
+        <div class="guest-divider"><span>ή</span></div>
+        <button id="guestEntryBtn" class="guest-entry-btn" type="button">
+          Είσοδος δοκιμής
+        </button>
+        <small>
+          Χωρίς λογαριασμό, με τους δοκιμαστικούς χρήστες. Η πραγματική εγγραφή
+          θα ενεργοποιηθεί μόλις ρυθμιστεί το Supabase.
+        </small>
+      </div>
     </section>
   </section>
 

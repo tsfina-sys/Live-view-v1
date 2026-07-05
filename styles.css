@@ -1064,3 +1064,52 @@ textarea:focus, select:focus { border-color: var(--accent-2); }
     padding-bottom: 18px;
   }
 }
+
+
+.guest-entry-wrap {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.guest-divider {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 20px;
+  color: #7f8ca1;
+  font-size: .68rem;
+}
+
+.guest-divider::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255,255,255,.10);
+}
+
+.guest-divider span {
+  position: relative;
+  z-index: 1;
+  padding: 0 9px;
+  background: rgba(7,17,32,.96);
+}
+
+.guest-entry-btn {
+  min-height: 46px;
+  border: 1px solid rgba(128,173,255,.32);
+  border-radius: 12px;
+  background: rgba(128,173,255,.12);
+  color: #d7e4ff;
+  font-weight: 900;
+}
+
+.guest-entry-wrap small {
+  color: var(--muted);
+  font-size: .66rem;
+  line-height: 1.4;
+  text-align: center;
+}

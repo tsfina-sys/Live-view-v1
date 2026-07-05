@@ -2,10 +2,10 @@
   "id": "./",
   "name": "LiveView",
   "short_name": "LiveView",
-  "description": "LiveView με σύνδεση ή εγγραφή από την αρχική οθόνη και χωρίς ερωτηματικό λογαριασμού στον χάρτη.",
+  "description": "LiveView με είσοδο δοκιμής όταν το Supabase δεν έχει ακόμη ρυθμιστεί.",
   "lang": "el",
   "dir": "ltr",
-  "start_url": "./?source=pwa&version=d11",
+  "start_url": "./?source=pwa&version=d12",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

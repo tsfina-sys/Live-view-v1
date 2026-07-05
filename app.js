@@ -47,6 +47,7 @@ let supabaseConfigured = false;
 let myCountryName = null;
 let appEntered = false;
 let pendingEntryAfterAuth = false;
+let guestMode = false;
 
 const userMarkerEntries = new Map();
 
@@ -124,6 +125,8 @@ const registerPasswordAgain = document.getElementById("registerPasswordAgain");
 const acceptTerms = document.getElementById("acceptTerms");
 const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
 const authMessage = document.getElementById("authMessage");
+const guestEntryWrap = document.getElementById("guestEntryWrap");
+const guestEntryBtn = document.getElementById("guestEntryBtn");
 
 const accountDialog = document.getElementById("accountDialog");
 const closeAccountBtn = document.getElementById("closeAccountBtn");
@@ -175,10 +178,13 @@ function initializeSupabaseClient() {
   supabaseMissingNotice.hidden = supabaseConfigured;
 
   if (!supabaseConfigured) {
+    guestEntryWrap.hidden = false;
     setAppUsers(fallbackDemoUsers);
     updateAccountUi();
     return false;
   }
+
+  guestEntryWrap.hidden = true;
 
   supabaseClient = window.supabase.createClient(config.url, config.key, {
     auth: {
@@ -195,6 +201,7 @@ function openAuthDialog(mode = "login") {
   switchAuthMode(mode);
   setAuthMessage("");
   supabaseMissingNotice.hidden = supabaseConfigured;
+  guestEntryWrap.hidden = supabaseConfigured;
   startIntro.hidden = true;
   startAuthPanel.hidden = false;
 
@@ -213,7 +220,14 @@ function closeAuthPanel() {
 }
 
 function updateStartEntryButton() {
-  enterAppBtn.textContent = currentUser ? "Είσοδος" : "Σύνδεση / Εγγραφή";
+  if (currentUser) {
+    enterAppBtn.textContent = "Είσοδος";
+    return;
+  }
+
+  enterAppBtn.textContent = supabaseConfigured
+    ? "Σύνδεση / Εγγραφή"
+    : "Είσοδος / Ρύθμιση λογαριασμού";
 }
 
 async function enterMainApp() {
@@ -277,7 +291,7 @@ function updateAccountUi() {
   accountNickname.textContent = nickname;
   accountEmail.textContent = currentUser?.email || "Δεν έχει γίνει σύνδεση";
   profileNicknameInput.value = currentUser ? nickname : "";
-  accountState.textContent = currentUser ? "Συνδεδεμένος" : "Επισκέπτης";
+  accountState.textContent = currentUser ? "Συνδεδεμένος" : (guestMode ? "Δοκιμαστική είσοδος" : "Επισκέπτης");
   profileMenuBtn.title = currentUser ? `Προφίλ: ${nickname}` : "Λογαριασμός";
 
   updateStartEntryButton();
@@ -360,7 +374,7 @@ function createOwnPublicMarker(longitude, latitude) {
   const publicNickname =
     currentProfile?.nickname ||
     currentUser?.user_metadata?.nickname ||
-    "Ε";
+    (guestMode ? "Guest" : "Ε");
   el.textContent = publicNickname.charAt(0).toUpperCase();
   el.title = "Η προσεγγιστική δημόσια θέση σου";
 
@@ -430,6 +444,7 @@ function subscribeProfiles() {
 
 async function applySession(session) {
   currentUser = session?.user || null;
+  if (currentUser) guestMode = false;
 
   if (!currentUser) {
     currentProfile = null;
@@ -473,10 +488,40 @@ async function initializeAuth() {
 }
 
 async function toggleAvailability() {
+  if (guestMode && !supabaseConfigured) {
+    if (!isAvailable) {
+      const located =
+        Boolean(myCoordinates) ||
+        await requestMyLocation({ keepGlobeView: false });
+
+      if (!located || !myCoordinates) return;
+
+      const publicLongitude = privacyOffset(myCoordinates.longitude);
+      const publicLatitude = privacyOffset(myCoordinates.latitude);
+
+      isAvailable = true;
+      createOwnPublicMarker(publicLongitude, publicLatitude);
+      updateAccountUi();
+      showToast("Διαθεσιμότητα δοκιμής ενεργή.");
+      return;
+    }
+
+    isAvailable = false;
+    if (myPublicMarker) {
+      myPublicMarker.remove();
+      myPublicMarker = null;
+    }
+    updateAccountUi();
+    showToast("Η διαθεσιμότητα δοκιμής απενεργοποιήθηκε.");
+    return;
+  }
+
   if (!supabaseConfigured) {
+    showStartScreen();
+    pendingEntryAfterAuth = true;
     openAuthDialog("login");
     setAuthMessage(
-      "Πρέπει πρώτα να συνδεθεί το Supabase μέσω του αρχείου supabase-config.js.",
+      "Για πραγματικό λογαριασμό χρειάζεται πρώτα ρύθμιση Supabase.",
       "error"
     );
     return;
@@ -1345,11 +1390,17 @@ profileMenuBtn.addEventListener("click", () => {
     } else {
       accountDialog.setAttribute("open", "");
     }
-  } else {
-    showStartScreen();
-    pendingEntryAfterAuth = true;
-    openAuthDialog("login");
+    return;
   }
+
+  if (guestMode) {
+    showToast("Βρίσκεσαι σε λειτουργία δοκιμής.");
+    return;
+  }
+
+  showStartScreen();
+  pendingEntryAfterAuth = true;
+  openAuthDialog("login");
 });
 
 backAuthBtn.addEventListener("click", closeAuthPanel);
@@ -1363,6 +1414,15 @@ showLoginBtn.addEventListener("click", () => {
 showRegisterBtn.addEventListener("click", () => {
   switchAuthMode("register");
   setAuthMessage("");
+});
+
+guestEntryBtn.addEventListener("click", async () => {
+  guestMode = true;
+  pendingEntryAfterAuth = false;
+  setAppUsers(fallbackDemoUsers);
+  updateAccountUi();
+  await enterMainApp();
+  showToast("Μπήκες σε λειτουργία δοκιμής.");
 });
 
 loginForm.addEventListener("submit", async event => {
