@@ -1,0 +1,10 @@
+{
+  "name": "LiveView MVP",
+  "short_name": "LiveView",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07101f",
+  "theme_color": "#0b1220",
+  "description": "Ζωντανή εικόνα από χρήστες κατόπιν αιτήματος και αποδοχής.",
+  "icons": []
+}

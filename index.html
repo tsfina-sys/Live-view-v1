@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="description" content="LiveView MVP — ζωντανή εικόνα κατόπιν αιτήματος από χρήστες σε χάρτη." />
+  <title>LiveView MVP D1</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>LiveView</h1>
+      <p>Ζωντανή εικόνα, μόνο με αποδοχή</p>
+    </div>
+    <button id="availabilityBtn" class="status-btn" type="button" aria-pressed="false">
+      <span class="status-dot"></span>
+      Μη διαθέσιμος
+    </button>
+  </header>
+
+  <main>
+    <section class="map-shell" aria-label="Χάρτης διαθέσιμων χρηστών">
+      <div id="map"></div>
+
+      <div class="privacy-pill">
+        <span>🛡️</span>
+        Η δημόσια θέση εμφανίζεται προσεγγιστικά
+      </div>
+
+      <div class="map-actions">
+        <button id="locateBtn" class="round-btn" type="button" title="Η θέση μου">◎</button>
+        <button id="cameraBtn" class="round-btn" type="button" title="Δοκιμή κάμερας">📷</button>
+      </div>
+
+      <aside class="legend">
+        <div><span class="legend-dot available"></span> Διαθέσιμος</div>
+        <div><span class="legend-dot busy"></span> Σε μετάδοση</div>
+      </aside>
+    </section>
+
+    <section class="bottom-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Κοντινοί διαθέσιμοι χρήστες</h2>
+          <p>Επίλεξε σημείο στον χάρτη ή χρήστη από τη λίστα.</p>
+        </div>
+        <span id="onlineCount" class="count-badge">0 online</span>
+      </div>
+      <div id="userList" class="user-list"></div>
+    </section>
+  </main>
+
+  <dialog id="requestDialog" class="dialog">
+    <form method="dialog">
+      <button class="dialog-close" value="cancel" aria-label="Κλείσιμο">×</button>
+      <div class="avatar large" id="requestAvatar">Α</div>
+      <h2 id="requestName">Αίτημα ζωντανής εικόνας</h2>
+      <p id="requestLocation"></p>
+
+      <label class="field">
+        <span>Μήνυμα</span>
+        <textarea id="requestMessage" maxlength="140"
+          placeholder="Π.χ. Μπορείς να μου δείξεις την κίνηση στον δρόμο;"></textarea>
+      </label>
+
+      <label class="field">
+        <span>Διάρκεια</span>
+        <select id="requestDuration">
+          <option value="2">2 λεπτά</option>
+          <option value="5">5 λεπτά</option>
+          <option value="10">10 λεπτά</option>
+        </select>
+      </label>
+
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary-btn">Ακύρωση</button>
+        <button id="sendRequestBtn" value="default" class="primary-btn">Αποστολή αιτήματος</button>
+      </div>
+      <p class="fine-print">Η κάμερα δεν ανοίγει χωρίς ρητή αποδοχή του άλλου χρήστη.</p>
+    </form>
+  </dialog>
+
+  <dialog id="cameraDialog" class="dialog camera-dialog">
+    <div class="camera-head">
+      <div>
+        <h2>Δοκιμή πίσω κάμερας</h2>
+        <p>Η εικόνα παραμένει μόνο στη συσκευή σου σε αυτή την έκδοση.</p>
+      </div>
+      <button id="closeCameraBtn" class="dialog-close" type="button" aria-label="Κλείσιμο">×</button>
+    </div>
+    <video id="cameraPreview" autoplay muted playsinline></video>
+    <div id="cameraError" class="camera-error" hidden></div>
+    <div class="dialog-actions">
+      <button id="switchCameraBtn" class="secondary-btn" type="button">Εναλλαγή κάμερας</button>
+      <button id="stopCameraBtn" class="primary-btn" type="button">Τερματισμός</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
